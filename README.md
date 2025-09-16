@@ -39,8 +39,3 @@ No tenemos vendedores reales es una parodia y un juego.
 3. Ventas
 4. Dashboard
 5. Mensajería
-
-
-Características, Tecnologías utilizadas,
-Contribución y Licencia. Ejemplo de estructura para continuar el
-README.md:
