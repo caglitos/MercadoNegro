@@ -122,8 +122,9 @@ dist
 # TernJS port file
 .tern-port
 
-# Stores VSCode versions used for testing VSCode extensions
+# Stores VSCode versions used for testing VSCode extensions and Idea
 .vscode-test
+.idea
 
 # yarn v3
 .pnp.*
@@ -137,3 +138,6 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# obsidian editor
+.obsidian

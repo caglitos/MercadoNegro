@@ -1,0 +1,60 @@
+erDiagram
+    USUARIO ||--o{ DIRECCION: tiene
+    USUARIO ||--o{ CONFIGURACION: tiene
+    USUARIO ||--o{ VENDEDOR: es
+    USUARIO ||--o{ RESENA: escribe
+    VENDEDOR ||--o{ PRODUCTO: publica
+    PRODUCTO ||--o{ RESENA: recibe
+
+    DIRECCION {
+        string Id
+        string Id_Usuario
+        string Codigo_Postal
+        string Calle
+        string Numero
+        string Ciudad
+        string Estado
+        string Pais
+        number Longitud
+        number Latitud
+    }
+
+    CONFIGURACION {
+        string Id
+        string Id_Usuario
+        Ajuste Ajuste[]
+    }
+
+    USUARIO {
+        string Id
+        string Nombre
+        string Correo
+        string Contrasena
+    }
+
+    VENDEDOR {
+        string Id
+        string Id_Usuario
+        string Nombre_de_Vendedor
+        string Biografia
+        number Rating
+        number Total_ventas
+        string Estado
+    }
+
+    PRODUCTO {
+        string Id
+        string Id_Vendedor
+        string Nombre
+        string Descripcion
+        number Precio
+        number Stock
+    }
+
+    RESENA {
+        string Id
+        string Id_Usuario
+        string Id_Producto
+        string Comentario
+        number Calificacion
+    }
