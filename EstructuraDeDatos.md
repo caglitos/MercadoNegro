@@ -1,6 +1,7 @@
 # Estructura de Datos
 
-En este documento veremos la estructura principal de los datos de la aplicación con un ejemplo JSON, la sintaxis SQL y el modelo de Mongoose para MongoDB.
+En este documento veremos la estructura principal de los datos de la aplicación con un ejemplo JSON, la sintaxis SQL y
+el modelo de Mongoose para MongoDB.
 
 ## Índice
 
@@ -15,17 +16,23 @@ En este documento veremos la estructura principal de los datos de la aplicación
 
 ## Base de Datos
 
-Aunque recurriremos a SQL para explicar la sintaxis, la base de datos **real** será MongoDB, por lo que los datos se guardarán en documentos JSON.
+Aunque recurriremos a SQL para explicar la sintaxis, la base de datos
+**real** será MongoDB, por lo que los datos se guardarán en
+documentos JSON.
 
 ### ¿Por qué MongoDB en vez de SQL?
 
-Si bien los datos están estructurados, no necesariamente se cumplirán todos los campos todas las veces o quizá creemos nuevos durante el desarrollo, así que es mejor y más sencillo algo no relacional.
+Si bien los datos están estructurados, no necesariamente se cumplirán
+todos los campos todas las veces o quizá creemos nuevos durante el
+desarrollo, así que es mejor y más sencillo algo no relacional.
 
-Además, la tabla de Configuración es dinámica y no tiene un formato fijo, lo que la hace ideal para MongoDB.
+Además, la tabla de Configuración es dinámica y no tiene un formato
+fijo, lo que la hace ideal para MongoDB.
 
 ## Tablas
 
-Los datos se presentarán con las siguientes tablas para una explicación más sencilla.
+Los datos se presentarán con las siguientes tablas para una
+explicación más sencilla.
 
 Cada tabla tendrá los siguientes apartados:
 
@@ -35,6 +42,12 @@ Cada tabla tendrá los siguientes apartados:
 - Ejemplo JSON: Ejemplo de un documento JSON con los campos.
 - Modelo de Mongoose: Modelo de Mongoose para MongoDB.
 - Relaciones: Explicación de las relaciones entre tablas.
+
+Los modelos de mongoose que se muestran son de ejemplos de como
+pueden llegar a ser, pero en este caso varian, si desea ver los
+modelos implementados en el proyecto, puede verlos en la carpeta
+`src/models`, de la rama `backend` del repositorio
+[Mercado Negro](https://github.com/caglitos/MercadoNegro).
 
 ---
 
@@ -50,8 +63,10 @@ Es la tabla principal, en ella se guardan los datos del usuario además de los d
 | Contraseña | Segundo campo de autenticación. Debe tener entre 8-18 caracteres, no secuencias continuas de números o letras (123, fgh), al menos una mayúscula, una minúscula y un carácter especial ($, &, #, ...). |
 
 **Sintaxis SQL:**
+
 ```sql
-CREATE TABLE Usuario (
+CREATE TABLE Usuario
+(
     Id         INT PRIMARY KEY AUTO_INCREMENT,
     Nombre     VARCHAR(50)         NOT NULL,
     Correo     VARCHAR(100) UNIQUE NOT NULL,
@@ -60,6 +75,7 @@ CREATE TABLE Usuario (
 ```
 
 **Ejemplo JSON:**
+
 ```json
 {
   "Id": "609c1f2e8f1b2c0015b3c4d5",
@@ -70,19 +86,21 @@ CREATE TABLE Usuario (
 ```
 
 **Modelo de Mongoose:**
+
 ```javascript
 import mongoose from 'mongoose';
 
 const usuarioSchema = new mongoose.Schema({
-    Nombre: { type: String, required: true },
-    Correo: { type: String, required: true, unique: true },
-    Contraseña: { type: String, required: true }
+    Nombre: {type: String, required: true},
+    Correo: {type: String, required: true, unique: true},
+    Contraseña: {type: String, required: true}
 });
 
 export default mongoose.model('Usuario', usuarioSchema);
 ```
 
 **Relaciones:**
+
 - Un usuario puede tener varias direcciones.
 - Un usuario puede tener una configuración.
 - Un usuario puede registrarse como vendedor.
@@ -92,7 +110,8 @@ export default mongoose.model('Usuario', usuarioSchema);
 
 ### Dirección
 
-Esta tabla es un subdocumento de Usuario, en ella se guardan las direcciones del usuario, puede tener varias direcciones.
+Esta tabla es un subdocumento de Usuario, en ella se guardan las direcciones del usuario, puede tener varias
+direcciones.
 
 | Campo         | Descripción                               |
 |:--------------|:------------------------------------------|
@@ -108,8 +127,10 @@ Esta tabla es un subdocumento de Usuario, en ella se guardan las direcciones del
 | Latitud       | Coordenada geográfica.                    |
 
 **Sintaxis SQL:**
+
 ```sql
-CREATE TABLE Direccion (
+CREATE TABLE Direccion
+(
     Id            INT PRIMARY KEY AUTO_INCREMENT,
     Id_Usuario    INT,
     Codigo_Postal VARCHAR(20)  NOT NULL,
@@ -125,6 +146,7 @@ CREATE TABLE Direccion (
 ```
 
 **Ejemplo JSON:**
+
 ```json
 {
   "Id": "609c1f2e8f1b2c0015b3c4d6",
@@ -141,25 +163,27 @@ CREATE TABLE Direccion (
 ```
 
 **Modelo de Mongoose:**
+
 ```javascript
 import mongoose from 'mongoose';
 
 const direccionSchema = new mongoose.Schema({
-    Id_Usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
-    Codigo_Postal: { type: String, required: true },
-    Calle: { type: String, required: true },
-    Numero: { type: String, required: true },
-    Ciudad: { type: String, required: true },
-    Estado: { type: String, required: true },
-    Pais: { type: String, required: true },
-    Longitud: { type: Number },
-    Latitud: { type: Number }
+    Id_Usuario: {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true},
+    Codigo_Postal: {type: String, required: true},
+    Calle: {type: String, required: true},
+    Numero: {type: String, required: true},
+    Ciudad: {type: String, required: true},
+    Estado: {type: String, required: true},
+    Pais: {type: String, required: true},
+    Longitud: {type: Number},
+    Latitud: {type: Number}
 });
 
 export default mongoose.model('Direccion', direccionSchema);
 ```
 
 **Relaciones:**
+
 - Una dirección pertenece a un usuario.
 
 ---
@@ -168,19 +192,70 @@ export default mongoose.model('Direccion', direccionSchema);
 
 Configura las preferencias del usuario. Solo se guardan los ajustes modificados.
 
-| Campo      | Descripción                                  |
-|:-----------|:---------------------------------------------|
-| Id         | Llave primaria, autogenerada por MongoDB.    |
-| Id_Usuario | Llave foránea, referencia al usuario.        |
-| Ajuste     | Array de ajustes modificados por el usuario. |
+<table>
+    <thead>
+    <tr>
+        <th>
+            Campo
+        </th>
+        <th>
+            Descripción
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            Id
+        </td>
+        <td>
+            Llave primaria, autogenerada por MongoDB.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Id_Usuario
+        </td>
+        <td>
+            Llave foránea, que hace referencia al usuario.
+        </td>
+    </tr>
+    <tr>
+        <td>Ajuste</td>
+        <td>
+            <table>
+                <tr>
+                    <td>Nombre del ajuste</td>
+                    <td>Valor</td>
+                </tr>
+                <tr>
+                    <td>Nombre del ajuste</td>
+                    <td>Valor</td>
+                </tr>
+                <tr>
+                    <td>Nombre del ajuste</td>
+                    <td>Valor</td>
+                </tr>
+                <tr>
+                    <td>Nombre del ajuste</td>
+                    <td>Valor</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
 
 Cada ajuste es un objeto con:
+
 - NombreDelAjuste: nombre del ajuste.
 - Valor: puede ser **boolean** o un valor de tipo **String** (enum).
 
 **Sintaxis SQL:**
+
 ```sql
-CREATE TABLE Configuracion (
+CREATE TABLE Configuracion
+(
     Id         INT PRIMARY KEY AUTO_INCREMENT,
     Id_Usuario INT,
     Ajuste     JSON,
@@ -189,36 +264,47 @@ CREATE TABLE Configuracion (
 ```
 
 **Ejemplo JSON:**
+
 ```json
 {
   "Id": "609c1f2e8f1b2c0015b3c4d7",
   "Id_Usuario": "609c1f2e8f1b2c0015b3c4d5",
   "Ajuste": [
-    { "NombreDelAjuste": "notificaciones", "Valor": true },
-    { "NombreDelAjuste": "tema", "Valor": "oscuro" },
-    { "NombreDelAjuste": "idioma", "Valor": "es" }
+    {
+      "NombreDelAjuste": "notificaciones",
+      "Valor": true
+    },
+    {
+      "NombreDelAjuste": "tema",
+      "Valor": "oscuro"
+    },
+    {
+      "NombreDelAjuste": "idioma",
+      "Valor": "es"
+    }
   ]
 }
 ```
 
 **Modelo de Mongoose:**
+
 ```javascript
 import mongoose from 'mongoose';
 
 const ajusteSchema = new mongoose.Schema({
-    NombreDelAjuste: { type: String, required: true },
+    NombreDelAjuste: {type: String, required: true},
     Valor: {
-      type: mongoose.Schema.Types.Mixed,
-      required: true,
-      validate: {
-        validator: v => typeof v === 'boolean' || typeof v === 'string',
-        message: 'El valor debe ser booleano o string'
-      }
+        type: mongoose.Schema.Types.Mixed,
+        required: true,
+        validate: {
+            validator: v => typeof v === 'boolean' || typeof v === 'string',
+            message: 'El valor debe ser booleano o string'
+        }
     }
 });
 
 const configuracionSchema = new mongoose.Schema({
-    Id_Usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+    Id_Usuario: {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true},
     Ajuste: [ajusteSchema]
 });
 
@@ -226,6 +312,7 @@ export default mongoose.model('Configuracion', configuracionSchema);
 ```
 
 **Relaciones:**
+
 - Una configuración pertenece a un usuario.
 
 ---
@@ -245,20 +332,23 @@ Tabla que guarda los datos públicos del vendedor.
 | Estado             | Estado del vendedor: activo, inactivo, suspendido. |
 
 **Sintaxis SQL:**
+
 ```sql
-CREATE TABLE Vendedor (
+CREATE TABLE Vendedor
+(
     Id                 INT PRIMARY KEY AUTO_INCREMENT,
     Id_Usuario         INT,
     Nombre_de_Vendedor VARCHAR(100) NOT NULL,
-    Biografia          TEXT NOT NULL,
+    Biografia          TEXT         NOT NULL,
     Rating             DECIMAL(2, 1) DEFAULT 0,
-    Total_ventas       INT DEFAULT 0,
+    Total_ventas       INT           DEFAULT 0,
     Estado             ENUM('activo', 'inactivo', 'suspendido') DEFAULT 'activo',
     FOREIGN KEY (Id_Usuario) REFERENCES Usuario (Id)
 );
 ```
 
 **Ejemplo JSON:**
+
 ```json
 {
   "Id": "609c1f2e8f1b2c0015b3c4d8",
@@ -272,22 +362,24 @@ CREATE TABLE Vendedor (
 ```
 
 **Modelo de Mongoose:**
+
 ```javascript
 import mongoose from 'mongoose';
 
 const vendedorSchema = new mongoose.Schema({
-    Id_Usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
-    Nombre_de_Vendedor: { type: String, required: true },
-    Biografia: { type: String, required: true },
-    Rating: { type: Number, default: 0 },
-    Total_ventas: { type: Number, default: 0 },
-    Estado: { type: String, enum: ['activo', 'inactivo', 'suspendido'], default: 'activo' }
+    Id_Usuario: {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true},
+    Nombre_de_Vendedor: {type: String, required: true},
+    Biografia: {type: String, required: true},
+    Rating: {type: Number, default: 0},
+    Total_ventas: {type: Number, default: 0},
+    Estado: {type: String, enum: ['activo', 'inactivo', 'suspendido'], default: 'activo'}
 });
 
 export default mongoose.model('Vendedor', vendedorSchema);
 ```
 
 **Relaciones:**
+
 - Un vendedor pertenece a un usuario.
 - Un vendedor puede tener varios productos.
 
@@ -297,56 +389,72 @@ export default mongoose.model('Vendedor', vendedorSchema);
 
 Guarda los productos que los vendedores tienen a la venta.
 
-| Campo       | Descripción                               |
-|:------------|:------------------------------------------|
-| Id          | Llave primaria, autogenerada por MongoDB. |
-| Id_Vendedor | Llave foránea, referencia al vendedor.    |
-| Nombre      | Nombre del producto.                      |
-| Descripción | Descripción del producto.                 |
-| Precio      | Precio del producto.                      |
-| Stock       | Unidades disponibles.                     |
+| Campo           | Descripción                               |
+|:----------------|:------------------------------------------|
+| Id              | Llave primaria, autogenerada por MongoDB. |
+| Id_Vendedor     | Llave foránea, referencia al vendedor.    |
+| Titulo          | Titulo del producto.                      |
+| Detalles cortos | Descripción rapida del producto.          |
+| Detalles largos | Descripción completa del producto.        |
+| Categoría       | Categoría del producto.                   |
+| Subcategoría    | Subcategoría del producto.                |
+| Precio          | Precio del producto.                      |
+| Stock           | Unidades disponibles.                     |
 
 **Sintaxis SQL:**
+
 ```sql
-CREATE TABLE Producto (
-    Id          INT PRIMARY KEY AUTO_INCREMENT,
-    Id_Vendedor INT,
-    Nombre      VARCHAR(100) NOT NULL,
-    Descripcion TEXT,
-    Precio      DECIMAL(10, 2) NOT NULL,
-    Stock       INT DEFAULT 0,
+CREATE TABLE Producto
+(
+    Id              INT PRIMARY KEY AUTO_INCREMENT,
+    Id_Vendedor     INT,
+    Titulo          VARCHAR(100)   NOT NULL,
+    Detalles_cortos VARCHAR(255),
+    Detalles_largos TEXT,
+    Categoria       VARCHAR(50),
+    Subcategoria    VARCHAR(50),
+    Precio          DECIMAL(10, 2) NOT NULL,
+    Stock           INT DEFAULT 0,
     FOREIGN KEY (Id_Vendedor) REFERENCES Vendedor (Id)
 );
 ```
 
 **Ejemplo JSON:**
+
 ```json
 {
   "Id": "609c1f2e8f1b2c0015b3c4d9",
   "Id_Vendedor": "609c1f2e8f1b2c0015b3c4d8",
-  "Nombre": "Artesanía de madera",
-  "Descripcion": "Figura tallada a mano.",
-  "Precio": 350.00,
-  "Stock": 10
+  "Titulo": "Camiseta de Algodón",
+  "Detalles_cortos": "Camiseta cómoda y fresca.",
+  "Detalles_largos": "Camiseta 100% algodón, disponible en varios colores y tallas.",
+  "Categoria": "Ropa",
+  "Subcategoria": "Camisetas",
+  "Precio": 19.99,
+  "Stock": 50
 }
 ```
 
 **Modelo de Mongoose:**
+
 ```javascript
 import mongoose from 'mongoose';
 
 const productoSchema = new mongoose.Schema({
-    Id_Vendedor: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendedor', required: true },
-    Nombre: { type: String, required: true },
-    Descripcion: { type: String },
-    Precio: { type: Number, required: true },
-    Stock: { type: Number, default: 0 }
+    Id_Vendedor: {type: mongoose.Schema.Types.ObjectId, ref: 'Vendedor', required: true},
+    Titulo: {type: String, required: true},
+    Detalles_cortos: {type: String},
+    Detalles_largos: {type: String},
+    Categoria: {type: String},
+    Subcategoria: {type: String},
+    Precio: {type: Number, required: true},
+    Stock: {type: Number, default: 0}
 });
-
 export default mongoose.model('Producto', productoSchema);
 ```
 
 **Relaciones:**
+
 - Un producto pertenece a un vendedor.
 - Un producto puede tener varias reseñas.
 
@@ -363,46 +471,76 @@ Guarda las reseñas que los usuarios han dado a los **productos**.
 | Id_Producto  | Llave foránea, referencia al producto reseñado.          |
 | Comentario   | Texto de la reseña.                                      |
 | Calificación | Puntuación numérica (1-5, por ejemplo).                  |
+| Fecha        | Fecha en que se dejó la reseña.                          |
 
 **Sintaxis SQL:**
+
 ```sql
-CREATE TABLE Reseña (
-    Id          INT PRIMARY KEY AUTO_INCREMENT,
-    Id_Usuario  INT,
-    Id_Producto INT,
-    Comentario  TEXT,
+CREATE TABLE Reseña
+(
+    Id           INT PRIMARY KEY AUTO_INCREMENT,
+    Id_Usuario   INT,
+    Id_Producto  INT,
+    Comentario   TEXT,
     Calificacion INT CHECK (Calificacion BETWEEN 1 AND 5),
+    Fecha        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (Id_Usuario) REFERENCES Usuario (Id),
     FOREIGN KEY (Id_Producto) REFERENCES Producto (Id)
 );
 ```
 
 **Ejemplo JSON:**
+
 ```json
 {
   "Id": "609c1f2e8f1b2c0015b3c4da",
   "Id_Usuario": "609c1f2e8f1b2c0015b3c4d5",
   "Id_Producto": "609c1f2e8f1b2c0015b3c4d9",
   "Comentario": "Excelente calidad y atención.",
-  "Calificacion": 5
+  "Calificacion": 5,
+  "Fecha": "2024-06-15T12:34:56Z"
 }
 ```
 
 **Modelo de Mongoose:**
+
 ```javascript
 import mongoose from 'mongoose';
 
 const resenaSchema = new mongoose.Schema({
-    Id_Usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
-    Id_Producto: { type: mongoose.Schema.Types.ObjectId, ref: 'Producto', required: true },
-    Comentario: { type: String },
-    Calificacion: { type: Number, min: 1, max: 5 }
+    Id_Usuario: {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true},
+    Id_Producto: {type: mongoose.Schema.Types.ObjectId, ref: 'Producto', required: true},
+    Comentario: {type: String},
+    Calificacion: {type: Number, min: 1, max: 5},
+    Fecha: {type: Date, default: Date.now}
 });
 
 export default mongoose.model('Resena', resenaSchema);
 ```
 
+### Carrito
+
+Guarda los productos que el usuario seleccione
+
+<table>
+    <thead>
+        <tr>
+            <td>Campo</td>
+            <td>Definición</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+
 **Relaciones:**
+
 - Una reseña pertenece a un usuario.
 - Una reseña pertenece a un producto.
 - Un producto puede tener muchas reseñas.
