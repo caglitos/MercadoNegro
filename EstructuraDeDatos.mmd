@@ -1,60 +1,248 @@
 erDiagram
-    USUARIO ||--o{ DIRECCION: tiene
-    USUARIO ||--o{ CONFIGURACION: tiene
-    USUARIO ||--o{ VENDEDOR: es
-    USUARIO ||--o{ RESENA: escribe
-    VENDEDOR ||--o{ PRODUCTO: publica
-    PRODUCTO ||--o{ RESENA: recibe
+USUARIOS {
+BIGINT id PK
+VARCHAR nombre_usuario
+VARCHAR correo_electronico
+VARCHAR contrasena_hash
+VARCHAR nombre_mostrar
+ENUM tipo_usuario
+ENUM estado
+}
 
-    DIRECCION {
-        string Id
-        string Id_Usuario
-        string Codigo_Postal
-        string Calle
-        string Numero
-        string Ciudad
-        string Estado
-        string Pais
-        number Longitud
-        number Latitud
-    }
+PERFILES_USUARIO {
+BIGINT usuario_id
+VARCHAR telefono
+TEXT descripcion
+DECIMAL puntuacion_reputacion
+}
 
-    CONFIGURACION {
-        string Id
-        string Id_Usuario
-        Ajuste Ajuste[]
-    }
+DIRECCIONES {
+BIGINT id PK
+BIGINT usuario_id FK
+VARCHAR etiqueta
+VARCHAR nombre_contacto
+}
 
-    USUARIO {
-        string Id
-        string Nombre
-        string Correo
-        string Contrasena
-    }
+CATEGORIAS {
+BIGINT id PK
+BIGINT padre_id FK
+VARCHAR nombre
+}
 
-    VENDEDOR {
-        string Id
-        string Id_Usuario
-        string Nombre_de_Vendedor
-        string Biografia
-        number Rating
-        number Total_ventas
-        string Estado
-    }
+MARCAS {
+BIGINT id PK
+VARCHAR nombre
+}
 
-    PRODUCTO {
-        string Id
-        string Id_Vendedor
-        string Nombre
-        string Descripcion
-        number Precio
-        number Stock
-    }
+PRODUCTOS {
+BIGINT id PK
+BIGINT vendedor_id FK
+BIGINT categoria_id FK
+BIGINT marca_id FK
+VARCHAR titulo
+}
 
-    RESENA {
-        string Id
-        string Id_Usuario
-        string Id_Producto
-        string Comentario
-        number Calificacion
-    }
+PUBLICACIONES {
+BIGINT id PK
+BIGINT producto_id FK
+BIGINT vendedor_id FK
+BIGINT perfil_envio_id FK
+DECIMAL precio
+INT cantidad_disponible
+}
+
+VARIACIONES_PUBLICACION {
+BIGINT id PK
+BIGINT publicacion_id FK
+VARCHAR sku
+JSON valores_atributos
+}
+
+PERFILES_ENVIO {
+BIGINT id PK
+BIGINT vendedor_id FK
+VARCHAR nombre
+}
+
+OPCIONES_ENVIO {
+BIGINT id PK
+BIGINT perfil_envio_id FK
+VARCHAR transportista
+}
+
+TRANSACCIONES_INVENTARIO {
+BIGINT id PK
+BIGINT publicacion_id FK
+BIGINT variacion_id FK
+INT cambio
+}
+
+CARRITOS {
+BIGINT id PK
+BIGINT usuario_id FK
+}
+
+ITEMS_CARRITO {
+BIGINT id PK
+BIGINT carrito_id FK
+BIGINT publicacion_id FK
+BIGINT variacion_id FK
+INT cantidad
+}
+
+PEDIDOS {
+BIGINT id PK
+BIGINT comprador_id FK
+BIGINT vendedor_id FK
+BIGINT direccion_facturacion_id FK
+BIGINT direccion_envio_id FK
+DECIMAL monto_total
+}
+
+ITEMS_PEDIDO {
+BIGINT id PK
+BIGINT pedido_id FK
+BIGINT publicacion_id FK
+BIGINT variacion_id FK
+INT cantidad
+DECIMAL precio_unitario
+}
+
+PAGOS {
+BIGINT id PK
+BIGINT pedido_id FK
+BIGINT pagador_id FK
+BIGINT beneficiario_id FK
+DECIMAL monto
+}
+
+REEMBOLSOS {
+BIGINT id PK
+BIGINT pago_id FK
+BIGINT pedido_id FK
+DECIMAL monto
+}
+
+ENVIOS {
+BIGINT id PK
+BIGINT pedido_id FK
+VARCHAR proveedor_envio
+VARCHAR numero_seguimiento
+}
+
+PREGUNTAS_PRODUCTO {
+BIGINT id PK
+BIGINT producto_id FK
+BIGINT usuario_id FK
+VARCHAR titulo
+}
+
+RESPUESTAS_PRODUCTO {
+BIGINT id PK
+BIGINT pregunta_id FK
+BIGINT usuario_id FK
+}
+
+MENSAJES {
+BIGINT id PK
+BIGINT usuario_origen_id FK
+BIGINT usuario_destino_id FK
+BIGINT pedido_id FK
+VARCHAR asunto
+}
+
+RESENAS {
+BIGINT id PK
+BIGINT usuario_calificador_id FK
+BIGINT usuario_calificado_id FK
+BIGINT pedido_id FK
+TINYINT calificacion
+}
+
+DISPUTAS {
+BIGINT id PK
+BIGINT pedido_id FK
+BIGINT iniciador_id FK
+BIGINT respondedor_id FK
+VARCHAR tipo_disputa
+}
+
+PROMOCIONES {
+BIGINT id PK
+BIGINT vendedor_id FK
+VARCHAR nombre
+VARCHAR codigo
+}
+
+METODOS_PAGO {
+BIGINT id PK
+BIGINT usuario_id FK
+VARCHAR tipo_metodo
+}
+
+CARTERAS {
+BIGINT id PK
+BIGINT usuario_id FK
+DECIMAL saldo_disponible
+}
+
+TRANSACCIONES_CARTERA {
+BIGINT id PK
+BIGINT cartera_id FK
+DECIMAL monto
+}
+
+METRICAS_VENDEDOR {
+BIGINT id PK
+BIGINT vendedor_id FK
+DATE fecha_metrica
+}
+
+REGISTROS_AUDITORIA {
+BIGINT id PK
+BIGINT usuario_actor_id FK
+VARCHAR accion
+}
+
+IMAGENES {
+BIGINT id PK
+ENUM tipo_propietario
+BIGINT propietario_id
+VARCHAR url
+}
+
+%% Relaciones principales
+USUARIOS ||--|| PERFILES_USUARIO : "tiene"
+USUARIOS ||--o{ DIRECCIONES : "tiene"
+CATEGORIAS ||--o{ PRODUCTOS : "categoria_de"
+MARCAS ||--o{ PRODUCTOS : "marca_de"
+USUARIOS ||--o{ PRODUCTOS : "vende"
+PRODUCTOS ||--o{ PUBLICACIONES : "tiene"
+PUBLICACIONES ||--o{ VARIACIONES_PUBLICACION : "tiene"
+USUARIOS ||--o{ PUBLICACIONES : "publica"
+PERFILES_ENVIO ||--o{ PUBLICACIONES : "usado_por"
+PERFILES_ENVIO ||--o{ OPCIONES_ENVIO : "ofrece"
+PUBLICACIONES ||--o{ TRANSACCIONES_INVENTARIO : "registra"
+VARIACIONES_PUBLICACION ||--o{ TRANSACCIONES_INVENTARIO : "registra"
+USUARIOS ||--o{ CARRITOS : "usa"
+CARRITOS ||--o{ ITEMS_CARRITO : "contiene"
+PUBLICACIONES ||--o{ ITEMS_CARRITO : "referenciada_en"
+PEDIDOS ||--o{ ITEMS_PEDIDO : "contiene"
+PEDIDOS ||--o{ ENVIOS : "tiene"
+PEDIDOS ||--o{ PAGOS : "tiene"
+PAGOS ||--o{ REEMBOLSOS : "genera"
+USUARIOS ||--o{ PEDIDOS : "participa_como_comprador_o_vendedor"
+PREGUNTAS_PRODUCTO ||--o{ RESPUESTAS_PRODUCTO : "tiene"
+PRODUCTOS ||--o{ PREGUNTAS_PRODUCTO : "preguntado_en"
+USUARIOS ||--o{ PREGUNTAS_PRODUCTO : "pregunta"
+USUARIOS ||--o{ RESPUESTAS_PRODUCTO : "responde"
+USUARIOS ||--o{ MENSAJES : "envia_y_recibe"
+USUARIOS ||--o{ RESENAS : "califica"
+PEDIDOS ||--o{ RESENAS : "relacionada_con"
+PEDIDOS ||--o{ DISPUTAS : "puede_tener"
+USUARIOS ||--o{ PROMOCIONES : "crea"
+USUARIOS ||--o{ METODOS_PAGO : "guarda"
+USUARIOS ||--o{ CARTERAS : "posee"
+CARTERAS ||--o{ TRANSACCIONES_CARTERA : "registra"
+USUARIOS ||--o{ METRICAS_VENDEDOR : "tiene_metricas"
+USUARIOS ||--o{ REGISTROS_AUDITORIA : "actor_en"
