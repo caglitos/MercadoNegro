@@ -14,22 +14,23 @@
 * limitations under the License.
 */
 
-// src/model/wallet.model.js
+// src/model/post-variation.model.js
 
 import mongoose from "mongoose";
 
-const walletSchema = new mongoose.Schema(
+const postVariationSchema = new mongoose.Schema(
     {
-        user_id: {
+        listing_id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            ref: "Listing",
             required: true,
         },
-        currency: { type: String, default: "USD" },
-        available_balance: { type: Number, default: 0.0 },
-        pending_balance: { type: Number, default: 0.0 },
+        sku: String,
+        attribute_values: Object,
+        available_quantity: { type: Number, default: 0 },
+        price: Number,
     },
     { timestamps: { createdAt: "created_at" } }
 );
 
-export default mongoose.model("Wallet", walletSchema);
+export default mongoose.model("ListingVariation", postVariationSchema);

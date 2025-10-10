@@ -14,25 +14,22 @@
 * limitations under the License.
 */
 
-// src/model/product-answer.model.js
+// src/model/portfolio.model.js
 
 import mongoose from "mongoose";
 
-const productAnswerSchema = new mongoose.Schema(
+const walletSchema = new mongoose.Schema(
     {
-        question_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "ProductQuestion",
-            required: true,
-        },
         user_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: true,
         },
-        body: { type: String, required: true },
+        currency: { type: String, default: "USD" },
+        available_balance: { type: Number, default: 0.0 },
+        pending_balance: { type: Number, default: 0.0 },
     },
     { timestamps: { createdAt: "created_at" } }
 );
 
-export default mongoose.model("ProductAnswer", productAnswerSchema);
+export default mongoose.model("Wallet", walletSchema);

@@ -14,11 +14,11 @@
 * limitations under the License.
 */
 
-// src/model/listing.model.js
+// src/model/post.model.js
 
 import mongoose from "mongoose";
 
-const listingSchema = new mongoose.Schema(
+const postSchema = new mongoose.Schema(
     {
         product_id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -57,4 +57,4 @@ const listingSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-export default mongoose.model("Listing", listingSchema);
+export default mongoose.model("Listing", postSchema);

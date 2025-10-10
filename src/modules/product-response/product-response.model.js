@@ -13,3 +13,26 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+// src/model/product-response.model.js
+
+import mongoose from "mongoose";
+
+const productResponseSchema = new mongoose.Schema(
+    {
+        question_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ProductQuestion",
+            required: true,
+        },
+        user_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        body: { type: String, required: true },
+    },
+    { timestamps: { createdAt: "created_at" } }
+);
+
+export default mongoose.model("ProductAnswer", productResponseSchema);
