@@ -13,3 +13,12 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+import z from "zod";
+
+export const registerSchema = z.object({
+    username: z.string().min(3).max(30),
+    email: z.string().email(),
+    password: z.string().min(6).max(100),
+    displayName: z.string().min(3).max(50).optional(),
+});
+

@@ -3,20 +3,23 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon ./src/index.js"
   },
   "dependencies": {
     "bcryptjs": "3.0.2",
-    "bootstrap": "5.3.3",
     "cookie-parser": "1.4.7",
     "dotenv": "17.2.2",
     "express": "5.1.0",
     "jsonwebtoken": "9.0.2",
+    "mongodb": "6.15",
     "mongoose": "8.19.1",
+    "morgan": "^1.10.1",
+    "nodemailer": "^7.0.9",
+    "nodemon": "^3.1.10",
     "zod": "3.24.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "eslint": "^9.37.0"
   },
   "repository": {
     "type": "git",

@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Import the BD library
+import mongoose from "mongoose";
+import { db } from "./config.js";
 
 export const connectDB = async () => {
     console.log(">>> Conecting to DB...");
     try {
-        // connect to the database
+        await mongoose.connect(db);
         console.log(">>> DB is connected");
     } catch (error) {
         console.log(error);

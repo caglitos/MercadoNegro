@@ -18,7 +18,7 @@
 
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+export const user = new mongoose.Schema(
     {
         username: { type: String, required: true, unique: true },
         email: { type: String, required: true, unique: true },
@@ -34,8 +34,11 @@ const userSchema = new mongoose.Schema(
             enum: ["active", "suspended", "deleted", "pending"],
             default: "active",
         },
+        // TODO: agregar documentación a los campos de autenticación de dos factores
+        faCode: { type: String },
+        faCodeExpiration: { type: Date },
     },
     { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model("User", user);
