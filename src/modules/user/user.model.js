@@ -20,25 +20,52 @@ import mongoose from "mongoose";
 
 export const user = new mongoose.Schema(
     {
-        username: { type: String, required: true, unique: true },
-        email: { type: String, required: true, unique: true },
-        hashed_password: { type: String },
-        display_name: { type: String },
+        username: {
+            type: String,
+            // TODO: documentar que el username ya no es requerido
+            unique: true
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true
+        },
+        hashed_password: {
+            type: String
+        },
+        display_name: {
+            type: String
+        },
         user_type: {
             type: String,
-            enum: ["buyer", "seller", "both", "admin"],
+            enum: [
+                "buyer",
+                "seller",
+                "both",
+                "admin"
+            ],
             default: "buyer",
         },
         status: {
             type: String,
-            enum: ["active", "suspended", "deleted", "pending"],
+            enum: [
+                "active",
+                "suspended",
+                "deleted",
+                "pending"
+            ],
             default: "active",
         },
         // TODO: agregar documentación a los campos de autenticación de dos factores
         faCode: { type: String },
         faCodeExpiration: { type: Date },
     },
-    { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
+    {
+        timestamps: {
+            createdAt: "created_at",
+            updatedAt: "updated_at"
+        }
+    }
 );
 
 export default mongoose.model("User", user);

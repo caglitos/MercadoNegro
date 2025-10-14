@@ -39,28 +39,31 @@ export const register = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        const faCode = crypto.randomBytes(4).toString("hex").toUpperCase();
+
         const newUser = new User({
-            username,
-            email,
-            hashed_password: hashedPassword,
-            display_name: displayName,
+            email: email,
+            faCode,
+            faCodeExpiration: Date.now() + 900000, // 15 minutes
         });
 
-        const savedUser = await newUser.save();
+        await newUser.save();
 
-        const token = await createAccesToken({id: savedUser._id});
-
-        res.cookie("token", token);
-        res.cookie("UserId", savedUser._id);
-
-        res.json({
-            id: savedUser._id,
-            username: savedUser.username,
-            email: savedUser.email,
+        const info = await transporter.sendMail({
+            from: EMAIL_FROM, // sender address
+            to: email,
+            subject: "Welcome! Verify your email",
+            text: "your verification code is: " + faCode, // plain‑text body
         });
+
+        res.cookie("username", username);
+        res.cookie("passwordHash", hashedPassword);
+        res.cookie("displayName", displayName);
+
+        return res.status(201).json({message: "Verification code sent to email"});
     } catch (error) {
         try {
-            const email = req.body;
+            const { email } = req.body;
 
             const userFound = await User.findOne({email});
 
@@ -77,7 +80,7 @@ export const register = async (req, res) => {
             .status(500)
             .json({message: "Internal Server Error", error: error});
     }
-};
+}
 
 export const login = async (req, res) => {
     try {
@@ -114,7 +117,7 @@ export const login = async (req, res) => {
 
         console.log("Message sent:", info.messageId);
 
-        return res.status(200).json({message: "2FA code sent to email"}); // Change to 200 in production
+        return res.status(201).json({message: "2FA code sent to email"}); // Change to 200 in production
     } catch (error) {
         return res
             .status(500)
@@ -178,7 +181,8 @@ export const deleteAccount = async (req, res) => {
 
 export const faVerification = async (req, res) => {
     try {
-        const {email, code} = req.body;
+        const { email, code } = req.body;
+        const { username, passwordHash, displayName } = req.cookies;
 
         if (!email || !code)
             return res.status(400).json({message: "Email and code are required"});
@@ -206,6 +210,13 @@ export const faVerification = async (req, res) => {
             return res.status(400).json({message: "Invalid verification code"});
 
         const token = await createAccesToken({id: userFound._id});
+
+        if (username && passwordHash) {
+            userFound.username = username;
+            userFound.hashed_password = passwordHash;
+            userFound.display_name = displayName || username;
+            await userFound.save();
+        }
 
         res.cookie("token", token);
         res.cookie("UserId", userFound._id);
