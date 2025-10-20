@@ -1,0 +1,78 @@
+export default component Search(props: { action: () => void }) {
+    <div class="search-button" onClick={props.action}>
+        <div class="search-button-circle">
+        </div>
+        <div class="search-button-line">
+        </div>
+
+        <style>
+            .search-button {
+                position: relative;
+                
+                width: 20px;
+                height: 20px;
+
+                cursor: pointer;
+
+                transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease;
+            }
+            
+            .search-button-circle {
+                position: absolute;
+
+                width: 75%;
+                height: 75%;
+                
+                border-radius: 50%;
+                
+                background: var(--border-color, #000);
+                
+                display: grid;
+                
+                place-items: center;
+                transition: background-color 0.3s ease;
+            }
+
+            .search-button-circle::after {
+                content: "";
+                position: absolute;
+                inset: var(--thickness, 8%);
+                border-radius: 50%;
+                background: var(--inner-color, #fff);
+            }
+
+            .search-button-line {
+                position: absolute;
+                width: 10%;
+                height: 50%;
+                
+                margin-left: 60%;
+                margin-top: 63%;
+
+                background-color: #000000ff;
+                
+                border-radius: 1px;
+
+                transform: rotate(-45deg);
+                transform-origin: top left;
+
+                transition: background-color 0.3s ease;
+            }
+
+            .search-button:hover {
+                width: 18px;
+                height: 18px;
+            }
+
+            .search-button:hover .search-button-circle  {
+                background: var(--border-color, #FF8080);
+            }
+
+            .search-button:hover .search-button-line {
+                background: var(--border-color, #FF8080);
+            }
+
+
+        </style>
+    </div>
+}

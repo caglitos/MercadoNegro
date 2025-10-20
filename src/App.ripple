@@ -1,0 +1,18 @@
+import Home from "./pags/home.ripple";
+
+export component App() {
+	<div>
+	  <Home search={ () => {}} />
+	</div>
+}
+
+function searchAction(query: string) {
+    fetch(`http://localhost:3000/api/datas/search/${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Search results:", data);
+        })
+        .catch(error => {
+            console.error("Error during search:", error);
+        });
+}

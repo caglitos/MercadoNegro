@@ -1,0 +1,58 @@
+import SearchButton from "../molecules/search.button.ripple";
+
+export default component Search(props: { action: () => void }) {
+
+    <div class="search-container">
+        <div class="search-line">
+
+            <input type="text" placeholder="Buscar" class="search-input" />
+        
+            <label>
+                <SearchButton action={props.action} />
+            </label>
+        </div>
+
+        <style>
+            .search-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                width: 100%;
+                padding: 10px 0;
+                transition: width 0.3s ease;
+            }
+
+            .search-line {
+                display: flex;
+                align-items: center;
+
+                width: 50%;
+
+                border-bottom: 2px solid var(--border-color, #000);
+
+                padding: 5px 15px;
+
+                transition: border-bottom 0.3s ease;
+            }
+
+            .search-input {
+                flex: 1;
+                border: none;
+                outline: none;
+
+                font-size: 16px;
+                background-color: transparent;
+            }
+
+            .search-container:hover {
+                width: 97%;
+            }
+
+
+            .search-container:hover .search-line {
+                border-bottom: 2px solid var(--border-color, #FF8080);
+            }
+        </style>
+    </div>
+}
