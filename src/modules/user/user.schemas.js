@@ -16,9 +16,26 @@
 import z from "zod";
 
 export const registerSchema = z.object({
-    username: z.string().min(3).max(30),
+    username: z.string(),
     email: z.string().email(),
-    password: z.string().min(6).max(100),
-    displayName: z.string().min(3).max(50).optional(),
+    password: z.string(),
+    displayName: z.string().optional(),
 });
 
+export const loginSchema = z.object({
+    email: z.string().email(),
+    password: z.string(),
+});
+
+export const deleteAccountSchema = z.object({
+    password: z.string(),
+});
+
+export const faVerificationSchema = z.object({
+    email: z.string().email(),
+    code: z.string().length(8),
+});
+
+export const sellerRegisterSchema = z.object({
+    password: z.string(),
+});

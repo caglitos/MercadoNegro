@@ -24,7 +24,6 @@ import {
     EMAIL_FROM,
 } from "../../config.js";
 
-
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -41,26 +40,30 @@ export const register = async (req, res) => {
 
         const faCode = crypto.randomBytes(4).toString("hex").toUpperCase();
 
+        const hashedFaCode = await bcrypt.hash(faCode, 10);
+
         const newUser = new User({
             email: email,
-            faCode,
+            hashed_faCode: hashedFaCode,
             faCodeExpiration: Date.now() + 900000, // 15 minutes
         });
 
         await newUser.save();
 
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: EMAIL_FROM, // sender address
             to: email,
-            subject: "Welcome! Verify your email",
-            text: "your verification code is: " + faCode, // plain‑text body
+            subject: "Bienvenido! Verifica tu email",
+            html: `<h1>Gracias por registrarte</h1>
+                   <p>Tu código de verificación es: <b>${faCode}</b></p>
+                   <p>Este código tiene una duración de 15 minutos</p>`
         });
 
         res.cookie("username", username);
         res.cookie("passwordHash", hashedPassword);
         res.cookie("displayName", displayName);
 
-        return res.status(201).json({message: "Verification code sent to email"});
+        return res.status(201).json({message: "Codigo de verificacion enviado al email"});
     } catch (error) {
         try {
             const { email } = req.body;
@@ -68,60 +71,62 @@ export const register = async (req, res) => {
             const userFound = await User.findOne({email});
 
             if (userFound)
-                return res.status(400).json({message: "The email already exists"});
+                return res.status(400).json({message: "El email ya esta registrado"});
         } catch (error) {
             return res.status(500).json({
-                message: "Internal Server Error",
+                message: "Error interno del servidor",
                 error: error,
             });
         }
 
         return res
             .status(500)
-            .json({message: "Internal Server Error", error: error});
+            .json({message: "Error interno del servidor", error: error});
     }
 }
 
 export const login = async (req, res) => {
     try {
-        const {email, password} = req.body;
+        const { email, password } = req.body;
 
         const userFound = await User.findOne({email});
 
         if (!userFound)
-            return res.status(400).json({message: "The email does not exists"});
+            return res.status(400).json({message: "El email no esta registrado aun"});
 
         const isMatch = await bcrypt.compare(password, userFound.hashed_password);
 
         if (!isMatch)
-            return res.status(400).json({message: "The password is incorrect"});
+            return res.status(400).json({message: "Las contraseña es incorrecta"});
 
-        const faCode = crypto.randomBytes(4).toString("hex").toUpperCase();
+        const faCode = crypto
+            .randomBytes(4)
+            .toString("hex")
+            .toUpperCase();
+
+        const hashedFaCode = await bcrypt.hash(faCode, 10);
 
         await User.findByIdAndUpdate(
             userFound._id,
             {
-                faCode,
+                hashed_faCode: hashedFaCode,
                 faCodeExpiration: Date.now() + 900000, // 15 minutes
             },
             {new: true}
         );
 
-
         const info = await transporter.sendMail({
             from: EMAIL_FROM, // sender address
             to: email,
-            subject: "2FA",
-            text: "your 2FA code is: " + faCode, // plain‑text body
+            subject: "Codigo de verificacion por dos factores para iniciar sesion",
+            text: "Tu codigo de verificacion es: " + faCode, // plain‑text body
         });
 
-        console.log("Message sent:", info.messageId);
-
-        return res.status(201).json({message: "2FA code sent to email"}); // Change to 200 in production
+        return res.status(201).json({message: "Codigo 2FA enviado al email"});
     } catch (error) {
         return res
             .status(500)
-            .json({message: "Internal Server Error", error: error});
+            .json({message: "Error interno del servidor", error: error});
     }
 };
 
@@ -133,17 +138,21 @@ export const logout = (req, res) => {
 
 export const profile = async (req, res) => {
     try {
-        const userFound = await User.findById(req.user.id).select(
-            "-hashed_password"
-        );
+        const userId = req.user.id;
 
-        if (!userFound) return res.status(404).json({message: "User not found"});
+        if (!userId) return res.status(401).json({message: "No autorizado: el id no fue encontrado"});
+
+        const userFound =
+            await User.findById(userId)
+                .select("-hashed_password");
+
+        if (!userFound) return res.status(404).json({message: "No se encontro el usuario"});
 
         res.json(userFound);
     } catch (error) {
         return res
             .status(500)
-            .json({message: "Internal Server Error", error: error});
+            .json({message: "Error interno del servidor", error: error});
     }
 };
 
@@ -156,26 +165,29 @@ export const deleteAccount = async (req, res) => {
         if (id !== UserId)
             return res
                 .status(401)
-                .json({message: "You are not authorized to delete this account"});
+                .json({message: "No estas autorizado a eliminar la cuenta de otro usuario"});
 
         const userFound = await User.findById(id);
-        if (!userFound) return res.status(404).json({message: "User not found"});
+        if (!userFound) return res.status(404).json({message: "Usuario no encontrado"});
 
         const isMatch = await bcrypt.compare(password, userFound.hashed_password);
 
         if (!isMatch)
-            return res.status(400).json({message: "The password is incorrect"});
+            return res.status(400).json({message: "La contraseña es incorrecta"});
 
         await User.findByIdAndDelete(id);
 
         res.clearCookie("token");
         res.clearCookie("UserId");
+        res.clearCookie("username");
+        res.clearCookie("passwordHash");
+        res.clearCookie("displayName");
 
-        res.sendStatus(204);
+        res.sendStatus(200).json({message: "Cuenta eliminada correctamente"});
     } catch (error) {
         return res
             .status(500)
-            .json({message: "Internal Server Error", error: error});
+            .json({message: "Error interno del servidor", error: error});
     }
 };
 
@@ -185,49 +197,111 @@ export const faVerification = async (req, res) => {
         const { username, passwordHash, displayName } = req.cookies;
 
         if (!email || !code)
-            return res.status(400).json({message: "Email and code are required"});
+            return res.status(400).json({message: "Correo electronico y código son requeridos"});
 
         const userFound = await User.findOne({email});
 
-        if (!userFound) return res.status(404).json({message: "User not found"});
+        if (!userFound) return res.status(404).json({message: "Usuario no encontrado"});
 
-        if (!userFound.faCode || !userFound.faCodeExpiration)
+        if (!userFound.hashed_faCode || userFound.faCodeExpiration === undefined)
             return res
                 .status(400)
                 .json({
                     message:
-                        "No verification code found for this user. Please request a new one.",
+                        "No se ha solicitado un código de verificación," +
+                        " solicita uno nuevo desde el apartado de registro" +
+                        " o inicio de sesión.",
                 });
 
         if (Date.now() > userFound.faCodeExpiration)
             return res
                 .status(400)
                 .json({
-                    message: "Verification code expired. Please request a new one.",
+                    message: "El codigo de verificación ha expirado," +
+                        " solicita uno nuevo desde el apartado de registro" +
+                        " o inicio de sesión.",
                 });
 
-        if (userFound.faCode !== code.toUpperCase())
-            return res.status(400).json({message: "Invalid verification code"});
+        const isMatch = await bcrypt.compare(code, userFound.hashed_faCode);
+
+        if (!isMatch)
+            return res.status(400).json({message: "El codigo es incorrecto."});
+
+
+        await userFound.save();
 
         const token = await createAccesToken({id: userFound._id});
 
         if (username && passwordHash) {
+            // guardar los datos que se almacenaron temporalmente en cookies
             userFound.username = username;
             userFound.hashed_password = passwordHash;
             userFound.display_name = displayName || username;
+
+            // eliminar el código de verificación y su expiración
+            userFound.hashed_faCode = "";
+            userFound.faCodeExpiration = "";
+
             await userFound.save();
+
+            res.clearCookie("username");
+            res.clearCookie("passwordHash");
+            res.clearCookie("displayName");
         }
 
         res.cookie("token", token);
         res.cookie("UserId", userFound._id);
 
+        await transporter.sendMail({
+            from: EMAIL_FROM,
+            to: email,
+            subject: "Gracias! verificaste tu email",
+            html: `<h1>Gracias por Verificar</h1>
+                <p>Tu código de verificación ha sido eliminado</p>`
+        })
+
         return res.json({
-            id: userFound._id,
-            username: userFound.username,
-            email: userFound.email,
-            message: "Verification successful"
+            message: "Verification successful",
+            user: {
+                id: userFound._id,
+                username: userFound.username,
+                email: userFound.email
+            }
         });
     } catch (error) {
-        return res.status(500).json({message: "Internal Server Error", error});
+        return res.status(500).json({message: "Error interno del servidor", error});
+    }
+};
+
+export const sellerRegister = async (req, res) => {
+    try {
+        const { UserId } = req.cookies;
+        const { password } = req.body;
+
+        const userFound = await User.findById(UserId);
+
+        if (!userFound)
+            return res.status(400).json({ message: "Usuario no encontrado" });
+
+        const isMatch = bcrypt.compare(password, userFound.hashed_password);
+
+        if (!isMatch)
+            return res.status(400).json({ message: "La contraseña es incorrecta" });
+        
+        if (userFound.user_type === "both")
+            return res.status(400).json({ message: "El usuario ya es un vendedor" });
+
+        userFound.user_type = "both";
+
+        const userSaved = await userFound.save();
+
+        return res.status(201).json({ 
+            message: "Vendedor registrado con exito" ,
+            email: userFound.email,
+            username: userFound.username,
+            userType: userSaved.user_type,
+        });
+    } catch (error) {
+        return res.status(500).json({message: "Error interno del servidor", error});
     }
 };

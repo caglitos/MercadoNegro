@@ -23,23 +23,31 @@ import {
   profile,
   deleteAccount,
   faVerification,
+  sellerRegister
 } from "./user.controller.js";
-import { registerSchema } from "./user.schemas.js";
-// import schemas
+import {
+    registerSchema,
+    loginSchema,
+    deleteAccountSchema,
+    faVerificationSchema,
+    sellerRegisterSchema
+} from "./user.schemas.js";
 
 const router = Router();
 
-router.post("/register", /*validateSchema(registerSchema),*/ register);
+router.post("/register", validateSchema(registerSchema), register);
 
-router.post("/login", /*validateSchema(loginSchema),*/ login);
+router.post("/login", validateSchema(loginSchema), login);
 
 router.post("/logout", logout);
 
 router.get("/profile", authRequiered, profile);
 
-router.delete("/delete-account/:id", authRequiered, deleteAccount);
+router.delete("/delete-account/:id", validateSchema(deleteAccountSchema) ,deleteAccount);
 
-// Ruta para verificación 2FA: añadir slash inicial
-router.post("/verify-2fa", faVerification);
+router.post("/verify-2fa", validateSchema(faVerificationSchema), faVerification);
+
+
+router.post("/seller-register", /*authRequiered,*/ validateSchema(sellerRegisterSchema), sellerRegister);
 
 export default router;

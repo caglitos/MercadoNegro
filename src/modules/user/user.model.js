@@ -40,7 +40,6 @@ export const user = new mongoose.Schema(
             type: String,
             enum: [
                 "buyer",
-                "seller",
                 "both",
                 "admin"
             ],
@@ -57,7 +56,7 @@ export const user = new mongoose.Schema(
             default: "active",
         },
         // TODO: agregar documentación a los campos de autenticación de dos factores
-        faCode: { type: String },
+        hashed_faCode: { type: String },
         faCodeExpiration: { type: Date },
     },
     {
