@@ -27,8 +27,12 @@ export const loginSchema = z.object({
     password: z.string(),
 });
 
-export const deleteAccountSchema = z.object({
+export const deleteAccountBodySchema = z.object({
     password: z.string(),
+});
+
+export const deleteAccountParamsSchema = z.object({
+	id: z.string().length(24),
 });
 
 export const faVerificationSchema = z.object({

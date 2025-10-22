@@ -16,6 +16,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import user from "./modules/user/user.routes.js";
+import product from "./modules/product/product.routes.js";
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/user", user);
+app.use("/api/product", product);
 
 export default app;

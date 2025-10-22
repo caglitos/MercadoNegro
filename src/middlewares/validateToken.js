@@ -1,4 +1,4 @@
-import jwt, { decode } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config.js";
 
 export const authRequiered = (req, res, next) => {
@@ -7,11 +7,10 @@ export const authRequiered = (req, res, next) => {
   if (!token)
     return res.status(401).json({ message: "No token, authorization denied" });
 
-  jwt.verify(token, TOKEN_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: "Invalid token" });
+	jwt.verify(token, TOKEN_SECRET, (err, user) => {
+		if (err) return res.status(403).json({ message: "Invalid token" });
 
-    req.user = user; // Guardas el usuario completo (opcional)
-    req.userId = user.id; // ⬅️ Añades esto para compatibilidad
-    next();
-  });
+		req.user = user;  // ← ESTO ES LO QUE FALTABA
+		next();
+	});
 };

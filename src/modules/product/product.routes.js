@@ -13,3 +13,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+import { Router } from "express";
+import { authRequiered } from "../../middlewares/validateToken.js";
+import { validateBodySchema } from "../../middlewares/validator.middleware.js";
+// importar esquemas
+// importar controlladores
+import { createProduct } from "./product.controller.js";
+
+const router = Router();
+
+router.post("/create-product", authRequiered, /* validateSchema(Esquema),*/ createProduct);
+
+export default router;

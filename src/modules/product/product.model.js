@@ -18,7 +18,7 @@
 
 import mongoose from "mongoose";
 
-const productSchema = new mongoose.Schema(
+const product = new mongoose.Schema(
     {
         seller_id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -29,7 +29,8 @@ const productSchema = new mongoose.Schema(
         brand_id: { type: mongoose.Schema.Types.ObjectId, ref: "Brand" },
         title: { type: String, required: true },
         subtitle: String,
-        description: String,
+        short_description: String,
+        long_description: String,
         condition: {
             type: String,
             enum: ["new", "used", "refurbished"],
@@ -45,4 +46,4 @@ const productSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-export default mongoose.model("Product", productSchema);
+export default mongoose.model("Product", product);

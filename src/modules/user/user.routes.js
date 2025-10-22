@@ -13,41 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Router } from "express";
-import { authRequiered } from "../../middlewares/validateToken.js";
-import { validateSchema } from "../../middlewares/validator.middleware.js";
+import { Router } from 'express';
+import { authRequiered } from '../../middlewares/validateToken.js';
+import { validateBodySchema, validateParamsSchema } from '../../middlewares/validator.middleware.js';
 import {
-  register,
-  login,
-  logout,
-  profile,
-  deleteAccount,
-  faVerification,
-  sellerRegister
-} from "./user.controller.js";
+	register, login, logout, profile, deleteAccount, faVerification, sellerRegister,
+} from './user.controller.js';
 import {
-    registerSchema,
-    loginSchema,
-    deleteAccountSchema,
-    faVerificationSchema,
-    sellerRegisterSchema
-} from "./user.schemas.js";
+	registerSchema,
+	loginSchema,
+	deleteAccountBodySchema,
+	deleteAccountParamsSchema,
+	faVerificationSchema,
+	sellerRegisterSchema,
+} from './user.schemas.js';
 
 const router = Router();
 
-router.post("/register", validateSchema(registerSchema), register);
+router.post('/register', validateBodySchema(registerSchema), register);
 
-router.post("/login", validateSchema(loginSchema), login);
+router.post('/login', validateBodySchema(loginSchema), login);
 
-router.post("/logout", logout);
+router.post('/logout', logout);
 
-router.get("/profile", authRequiered, profile);
+router.get('/profile', authRequiered, profile);
 
-router.delete("/delete-account/:id", validateSchema(deleteAccountSchema) ,deleteAccount);
+router.delete(
+	'/delete-account/:id',
+	validateBodySchema(deleteAccountBodySchema),
+	validateParamsSchema(deleteAccountParamsSchema),
+	deleteAccount
+);
 
-router.post("/verify-2fa", validateSchema(faVerificationSchema), faVerification);
+router.post('/verify-2fa', validateBodySchema(faVerificationSchema), faVerification);
 
 
-router.post("/seller-register", /*authRequiered,*/ validateSchema(sellerRegisterSchema), sellerRegister);
+router.post('/seller-register', authRequiered, validateBodySchema(sellerRegisterSchema), sellerRegister);
 
 export default router;

@@ -13,3 +13,39 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+import Product from "./product.model.js";
+
+export const createProduct = async (req, res) => {
+    try {
+        const { 
+            sellerId,
+            categoryId,
+            brandId, 
+            title, 
+            subtitle, 
+            shortDescription, 
+            longDescription,
+            condition,
+            status
+          } = req.body;
+
+        const newProduct = new Product({
+            seller_id: sellerId,
+            category_id: categoryId,
+            brand_id: brandId,
+            title,
+            subtitle,
+            short_description: shortDescription,
+            long_description: longDescription,
+            condition,
+            status
+        });
+
+        await newProduct.save();
+
+        return res.status(201).json({ message: "Producto creado exitosamente" });
+    } catch (error) {
+        return res.status(500).json({ message: "Error interno del servidor" });
+    }
+}
+

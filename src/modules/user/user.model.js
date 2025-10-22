@@ -56,8 +56,8 @@ export const user = new mongoose.Schema(
             default: "active",
         },
         // TODO: agregar documentación a los campos de autenticación de dos factores
-        hashed_faCode: { type: String },
-        faCodeExpiration: { type: Date },
+        hashed_faCode: { type: String, default: null },
+        faCodeExpiration: { type: Date, default: null },
     },
     {
         timestamps: {

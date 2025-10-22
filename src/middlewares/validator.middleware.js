@@ -1,26 +1,23 @@
-export const validateSchema = (schema) => (req, res, next) => {
+export const validateBodySchema = (schema) => (req, res, next) => {
     try {
-        // Válida completamente el objeto req
-        schema.parse({
-            body: req.body,
-            query: req.query,
-            params: req.params,
-        });
-
+        schema.parse(req.body);
         next();
     } catch (error) {
-        // Error de validación de Zod
-        if (error.errors) {
-            return res.status(400).json({
-                message: "Validation error",
-                errors: error.errors,
-            });
-        }
-
-        // Otro tipo de error
-        return res.status(400).json({
-            message: "Unknown validation error",
-            error: error,
-        });
+        console.log(error);
+        return res
+            .status(400)
+            .json({ error: error.errors.map((error) => error.message) });
     }
+};
+
+export const validateParamsSchema = (schema) => (req, res, next) => {
+	try {
+		schema.parse(req.params);
+		next();
+	} catch (error) {
+		console.log(error);
+		return res
+			.status(400)
+			.json({ error: error.errors.map((error) => error.message) });
+	}
 };

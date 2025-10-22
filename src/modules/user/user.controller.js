@@ -26,10 +26,7 @@ import {
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
-    auth: {
-        user: EMAIL_USER,
-        pass: EMAIL_PASS,
-    },
+    auth: { user: EMAIL_USER, pass: EMAIL_PASS },
 });
 
 export const register = async (req, res) => {
@@ -138,13 +135,13 @@ export const logout = (req, res) => {
 
 export const profile = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const { UserId } = req.cookies;
 
-        if (!userId) return res.status(401).json({message: "No autorizado: el id no fue encontrado"});
+        if (!UserId) return res.status(401).json({message: "No autorizado: el id no fue encontrado"});
 
         const userFound =
-            await User.findById(userId)
-                .select("-hashed_password");
+            await User.findById(UserId)
+                .select("-hashed_password -hashed_faCode -faCodeExpiration -__v -created_at -updated_at -_id");
 
         if (!userFound) return res.status(404).json({message: "No se encontro el usuario"});
 
@@ -239,8 +236,8 @@ export const faVerification = async (req, res) => {
             userFound.display_name = displayName || username;
 
             // eliminar el código de verificación y su expiración
-            userFound.hashed_faCode = "";
-            userFound.faCodeExpiration = "";
+            userFound.hashed_faCode = null;
+            userFound.faCodeExpiration = null;
 
             await userFound.save();
 
