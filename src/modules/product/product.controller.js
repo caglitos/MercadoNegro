@@ -17,10 +17,9 @@ import Product from "./product.model.js";
 
 export const createProduct = async (req, res) => {
     try {
-        const { 
-            sellerId,
+        const {
             categoryId,
-            brandId, 
+            brandId,
             title, 
             subtitle, 
             shortDescription, 
@@ -29,8 +28,10 @@ export const createProduct = async (req, res) => {
             status
           } = req.body;
 
+		const sellerId = req.cookies.UserId;
+
         const newProduct = new Product({
-            seller_id: sellerId,
+			seller_id: sellerId,
             category_id: categoryId,
             brand_id: brandId,
             title,
@@ -43,9 +44,34 @@ export const createProduct = async (req, res) => {
 
         await newProduct.save();
 
-        return res.status(201).json({ message: "Producto creado exitosamente" });
+        return res.status(201).json({
+			message: "Producto creado exitosamente",
+			product: {
+				seller_id: newProduct.seller_id,
+				title: newProduct.title,
+				subtitle: newProduct.subtitle,
+				short_description: newProduct.short_description,
+				long_description: newProduct.long_description,
+				condition: newProduct.condition,
+				status: newProduct.status,
+				_id: newProduct._id
+		}
+		});
     } catch (error) {
-        return res.status(500).json({ message: "Error interno del servidor" });
+        return res.status(500).json({ message: "Error interno del servidor", error });
     }
 }
 
+export const getProductsBySeller = async (req, res) => {
+	try {
+		const { sellerId } = req.params;
+
+		const products =
+			await Product.find({ seller_id: sellerId })
+				.select("-createdAt -updatedAt -__v");
+
+		return res.status(200).json({ products });
+	} catch (error) {
+		return res.status(500).json({ message: "Error interno del servidor", error });
+	}
+}

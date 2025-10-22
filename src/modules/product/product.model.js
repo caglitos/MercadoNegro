@@ -17,6 +17,7 @@
 // src/model/product.model.js
 
 import mongoose from "mongoose";
+import { string } from 'zod';
 
 const product = new mongoose.Schema(
     {

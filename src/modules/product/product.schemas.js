@@ -13,3 +13,60 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+import z from 'zod';
+
+export const createSchema = z.object({
+	categoryId: z.string()
+		.length(24, 'El ID de la categoría debe tener 24 caracteres')
+		.optional(),
+	brandId: z.string()
+		.length(24, 'El ID de la marca debe tener 24 caracteres')
+		.optional(),
+	title: z.string()
+		.min(1, 'El título es obligatorio'),
+	subtitle: z.string()
+		.optional(),
+	shortDescription: z.string()
+		.optional(),
+	longDescription: z.string()
+		.optional(),
+	condition: z.enum(
+		[
+			'new',
+			'used',
+			'refurbished'
+		])
+		.optional(),
+	status: z.enum(
+		['draft',
+			'published',
+			'paused',
+			'closed'
+		])
+		.optional(),
+});
+
+export const getBySellerSchema = z.object({
+	sellerId: z.string()
+		.length(24, 'El ID del vendedor debe tener 24 caracteres')
+})
+
+export const getByIdSchema = z.object({
+	productId: z.string()
+		.length(24, 'El ID del producto debe tener 24 caracteres'),
+})
+
+export const getByCategorySchema = z.object({
+	categoryId: z.string()
+		.length(24, 'El ID de la categoría debe tener 24 caracteres'),
+})
+
+export const getByBrandSchema = z.object({
+	brandId: z.string()
+		.length(24, 'El ID de la marca debe tener 24 caracteres'),
+})
+
+export const searchProductsSchema = z.object({
+	query: z.string()
+		.min(1, 'El término de búsqueda es obligatorio'),
+})

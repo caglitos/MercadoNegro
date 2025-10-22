@@ -14,14 +14,34 @@
 * limitations under the License.
 */
 import { Router } from "express";
-import { authRequiered } from "../../middlewares/validateToken.js";
-import { validateBodySchema } from "../../middlewares/validator.middleware.js";
-// importar esquemas
-// importar controlladores
-import { createProduct } from "./product.controller.js";
+import { authRequired } from "../../middlewares/validateToken.js";
+import {
+	validateBodySchema,
+	validateParamsSchema
+} from "../../middlewares/validator.middleware.js";
+import {
+	createSchema,
+	getBySellerSchema
+} from "./product.schemas.js";
+import {
+	createProduct,
+	getProductsBySeller
+} from './product.controller.js';
 
 const router = Router();
 
-router.post("/create-product", authRequiered, /* validateSchema(Esquema),*/ createProduct);
+router.post(
+	"/create",
+	authRequired,
+	validateBodySchema(createSchema),
+	createProduct
+);
+
+router.get(
+	"/getBySeller/:sellerId",
+	authRequired,
+	validateParamsSchema(getBySellerSchema),
+	getProductsBySeller
+)
 
 export default router;

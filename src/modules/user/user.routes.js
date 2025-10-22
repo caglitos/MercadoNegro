@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Router } from 'express';
-import { authRequiered } from '../../middlewares/validateToken.js';
+import { authRequired } from '../../middlewares/validateToken.js';
 import { validateBodySchema, validateParamsSchema } from '../../middlewares/validator.middleware.js';
 import {
 	register, login, logout, profile, deleteAccount, faVerification, sellerRegister,
@@ -36,7 +36,7 @@ router.post('/login', validateBodySchema(loginSchema), login);
 
 router.post('/logout', logout);
 
-router.get('/profile', authRequiered, profile);
+router.get('/profile', authRequired, profile);
 
 router.delete(
 	'/delete-account/:id',
@@ -48,6 +48,11 @@ router.delete(
 router.post('/verify-2fa', validateBodySchema(faVerificationSchema), faVerification);
 
 
-router.post('/seller-register', authRequiered, validateBodySchema(sellerRegisterSchema), sellerRegister);
+router.post(
+	'/seller-register',
+	authRequired,
+	validateBodySchema(sellerRegisterSchema),
+	sellerRegister
+);
 
 export default router;
