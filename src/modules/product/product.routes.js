@@ -21,11 +21,12 @@ import {
 } from "../../middlewares/validator.middleware.js";
 import {
 	createSchema,
-	getBySellerSchema
+	getBySellerSchema,
+	getByIdSchema
 } from "./product.schemas.js";
 import {
-	createProduct,
-	getProductsBySeller
+	create,
+	getBySeller
 } from './product.controller.js';
 
 const router = Router();
@@ -34,14 +35,19 @@ router.post(
 	"/create",
 	authRequired,
 	validateBodySchema(createSchema),
-	createProduct
+	create
 );
 
 router.get(
 	"/getBySeller/:sellerId",
-	authRequired,
 	validateParamsSchema(getBySellerSchema),
-	getProductsBySeller
+	getBySeller
+)
+
+router.get(
+	"getByID/:productId",
+	validateParamsSchema(getByIdSchema),
+	getByID
 )
 
 export default router;

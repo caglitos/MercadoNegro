@@ -15,7 +15,7 @@
 */
 import Product from "./product.model.js";
 
-export const createProduct = async (req, res) => {
+export const create = async (req, res) => {
     try {
         const {
             categoryId,
@@ -62,7 +62,7 @@ export const createProduct = async (req, res) => {
     }
 }
 
-export const getProductsBySeller = async (req, res) => {
+export const getBySeller = async (req, res) => {
 	try {
 		const { sellerId } = req.params;
 
@@ -74,4 +74,32 @@ export const getProductsBySeller = async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({ message: "Error interno del servidor", error });
 	}
+}
+
+export const getByID = async (req, res) => {
+	try {
+	    const { productId } = req.param;
+
+
+		if (!productId)
+		    return res
+		            .status(400)
+		            .json({
+		                message: "El ID del producto es obligatorio"
+		            });
+
+	    const productFound =
+			await Product.findById(productId).select("-createdAt -updatedAt -__v");
+
+		if (!productFound)
+		    return res.status(404).json({message: "No se encontro el producto"});
+
+	    return res.status(200).json({
+			message: "Producto encontrado exitosamente",
+			product: productFound
+	    });
+	} catch (error) {
+	    return res.status(500).json({ message: "Error interno del servidor", error });
+	}
+
 }
