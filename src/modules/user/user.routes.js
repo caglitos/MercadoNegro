@@ -15,9 +15,18 @@
  */
 import { Router } from 'express';
 import { authRequired } from '../../middlewares/validateToken.js';
-import { validateBodySchema, validateParamsSchema } from '../../middlewares/validator.middleware.js';
 import {
-	register, login, logout, profile, deleteAccount, faVerification, sellerRegister,
+	validateBodySchema,
+	validateParamsSchema
+} from '../../middlewares/validator.middleware.js';
+import {
+	register,
+	login,
+	logout,
+	profile,
+	deleteAccount,
+	faVerification,
+	sellerRegister, getSellerById,
 } from './user.controller.js';
 import {
 	registerSchema,
@@ -26,6 +35,7 @@ import {
 	deleteAccountParamsSchema,
 	faVerificationSchema,
 	sellerRegisterSchema,
+	getSellerByID
 } from './user.schemas.js';
 
 const router = Router();
@@ -47,12 +57,18 @@ router.delete(
 
 router.post('/verify-2fa', validateBodySchema(faVerificationSchema), faVerification);
 
-
+// Seller
 router.post(
 	'/seller-register',
 	authRequired,
 	validateBodySchema(sellerRegisterSchema),
 	sellerRegister
 );
+
+router.get(
+	"/seller/:sellerId",
+	validateParamsSchema(getSellerByID),
+	getSellerById
+)
 
 export default router;

@@ -143,10 +143,10 @@ export const profile = async (req, res) => {
             await User.findById(UserId)
                 .select("-hashed_password -hashed_faCode -faCodeExpiration -__v -created_at -updated_at -_id");
 
-        if (!userFound) return res.status(404).json({message: "No se encontro el usuario"});
+		if (!userFound) return res.status(404).json({message: "No se encontro el usuario"});
 
         res.json(userFound);
-    } catch (error) {
+	} catch (error) {
         return res
             .status(500)
             .json({message: "Error interno del servidor", error: error});
@@ -236,10 +236,6 @@ export const faVerification = async (req, res) => {
             userFound.display_name = displayName || username;
 
             // eliminar el código de verificación y su expiración
-            userFound.hashed_faCode = null;
-            userFound.faCodeExpiration = null;
-
-            await userFound.save();
 
             res.clearCookie("username");
             res.clearCookie("passwordHash");
@@ -256,6 +252,11 @@ export const faVerification = async (req, res) => {
             html: `<h1>Gracias por Verificar</h1>
                 <p>Tu código de verificación ha sido eliminado</p>`
         })
+
+        userFound.hashed_faCode = null;
+        userFound.faCodeExpiration = Date.now();
+
+        await userFound.save();
 
         return res.json({
             message: "Verification successful",
@@ -302,3 +303,29 @@ export const sellerRegister = async (req, res) => {
         return res.status(500).json({message: "Error interno del servidor", error});
     }
 };
+
+export const getSellerById = async (req, res) => {
+	try {
+		const { sellerId } = req.params;
+
+		if (!sellerId)
+			return res.json({ message: "El Id es requerido" });
+
+		const sellerFound =
+			await User.findById(sellerId);
+
+		if (!sellerFound)
+			return res
+				.status(404)
+				.json({ message: "Vendedor no encontrado" });
+
+		return res.status(200).json({
+			message: "Vendedor encontrado",
+			seller: sellerFound
+		});
+	} catch (error) {
+		return res
+			.status(500)
+			.json({ message: "Error interno del servidor", error });
+	}
+}

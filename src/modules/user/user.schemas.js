@@ -43,3 +43,7 @@ export const faVerificationSchema = z.object({
 export const sellerRegisterSchema = z.object({
     password: z.string(),
 });
+
+export const getSellerByID = z.object({
+	sellerId: z.string().length(24),
+});
