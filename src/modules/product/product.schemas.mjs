@@ -15,6 +15,8 @@
 */
 import z from 'zod';
 
+const objectId = z.string().length(24, 'El ID debe tener 24 caracteres');
+
 export const createSchema = z.object({
 	categoryId: z.string()
 		.length(24, 'El ID de la categoría debe tener 24 caracteres')
@@ -47,26 +49,21 @@ export const createSchema = z.object({
 });
 
 export const getBySellerSchema = z.object({
-	sellerId: z.string()
-		.length(24, 'El ID del vendedor debe tener 24 caracteres')
-})
+	sellerId: objectId,
+});
 
 export const getByIdSchema = z.object({
-	productId: z.string()
-		.length(24, 'El ID del producto debe tener 24 caracteres'),
-})
+	productId: objectId,
+});
 
 export const getByCategorySchema = z.object({
-	categoryId: z.string()
-		.length(24, 'El ID de la categoría debe tener 24 caracteres'),
-})
+	categoryId: objectId,
+});
 
 export const getByBrandSchema = z.object({
-	brandId: z.string()
-		.length(24, 'El ID de la marca debe tener 24 caracteres'),
-})
+	brandId: objectId,
+});
 
 export const searchProductsSchema = z.object({
-	query: z.string()
-		.min(1, 'El término de búsqueda es obligatorio'),
-})
+	query: z.string().min(1, 'El término de búsqueda es obligatorio'),
+});

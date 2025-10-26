@@ -23,12 +23,13 @@ import {
 	createSchema,
 	getBySellerSchema,
 	getByIdSchema,
-	getByCategorySchema,
-} from "./product.schemas.js";
+	getByCategorySchema, getByBrandSchema,
+} from './product.schemas.js';
 import {
 	create,
 	getBySeller,
 	getByID,
+	getByCategory, getByBrand,
 } from './product.controller.js';
 
 const router = Router();
@@ -57,4 +58,12 @@ router.get(
     validateParamsSchema(getByCategorySchema),
     getByCategory
 );
+
+router.get(
+    "/getByBrand/:brandId",
+    validateParamsSchema(getByBrandSchema),
+	getByBrand
+);
+
+
 export default router;

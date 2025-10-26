@@ -66,11 +66,30 @@ export const getBySeller = async (req, res) => {
 	try {
 		const { sellerId } = req.params;
 
+		if (!sellerId)
+		    return res
+		            .status(400)
+		            .json({
+		                message: "El id del vendedor es obligatorio"
+		            });
+
 		const products =
 			await Product.find({ seller_id: sellerId })
 				.select("-createdAt -updatedAt -__v");
 
-		return res.status(200).json({ products });
+		if (!products)
+		    return res
+		            .status(404)
+		            .json({
+		                message: "No se encontraron productos de este vendedor"
+		            });
+
+
+
+		return res.status(200).json({
+			message: `Se han encontrado ${products.length} productos del vendedor`,
+			products
+		});
 	} catch (error) {
 		return res.status(500).json({ message: "Error interno del servidor", error });
 	}
@@ -105,16 +124,16 @@ export const getByID = async (req, res) => {
 
 export const getByCategory = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const { categoryId } = req.params;
 
-        if (!id)
+        if (!categoryId)
             return res
                     .status(400)
                     .json({
                         message: "EL Id es necesario"
                     });
 
-		const products = await Product.find({ category_id: id })
+		const products = await Product.find({ category_id: categoryId })
 				.select("-createdAt -updatedAt -__v");
 
 		if (!products)
@@ -127,6 +146,37 @@ export const getByCategory = async (req, res) => {
 
 		return res.status(200).json({
 		    message: `Se han encontrado ${products.length} de la categoria`,
+			productos: products
+		});
+	} catch (error) {
+		return res.status(500).json({ message: "Error interno del servidor", error });
+	}
+}
+
+export const getByBrand = async (req, res) => {
+	try {
+		const { brandId } = req.params;
+
+        if (!brandId)
+            return res
+                    .status(400)
+                    .json({
+                        message: "El Id de la marca es necesario"
+                    });
+
+		const products = await Product.find({ brand_id: brandId })
+			.select("-createdAt -updatedAt -__v");
+
+		if (!products)
+		    return res
+		            .status(404)
+		            .json({
+		                message: "No se encontraron productos de esa marca"
+		            });
+
+
+		return res.status(200).json({
+		    message: `Se han encontrado ${products.length} productos de la marca`,
 			productos: products
 		});
 	} catch (error) {
