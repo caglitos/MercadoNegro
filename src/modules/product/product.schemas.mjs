@@ -48,20 +48,24 @@ export const createSchema = z.object({
 		.optional(),
 });
 
-export const getBySellerSchema = z.object({
-	sellerId: objectId,
-});
-
 export const getByIdSchema = z.object({
 	productId: objectId,
 });
 
+export const getBySellerSchema = z.object({
+	sellerId: objectId,
+});
+
+export const getBySellerNameSchema = z.object({
+	sellerName: z.string().min(1, 'El nombre del vendedor es obligatorio'),
+})
+
 export const getByCategorySchema = z.object({
-	categoryId: objectId,
+	categoryName: z.string().min(1, 'El nombre de la categoría es obligatorio'),
 });
 
 export const getByBrandSchema = z.object({
-	brandId: objectId,
+	brandName: z.string().min(1, 'El nombre de la marca es obligatorio'),
 });
 
 export const searchProductsSchema = z.object({

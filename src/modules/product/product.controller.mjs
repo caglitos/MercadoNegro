@@ -95,6 +95,38 @@ export const getBySeller = async (req, res) => {
 	}
 }
 
+export const getBySellerName = async (req, res) => {
+	try {
+		const { sellerName } = req.params;
+
+		if (!sellerName)
+		    return res
+		            .status(400)
+		            .json({
+		                message: "El nombre del vendedor es obligatorio"
+		            });
+		
+		const products = 
+			await Product.find({ seller_name: sellerName })
+				.select("-createdAt -updatedAt -__v");
+		
+		if (!products)
+		    return res
+		            .status(404)
+		            .json({
+		                message: "No se encontraron productos de este vendedor"
+		            });
+		
+		
+		return res.status(200).json({
+		    message: `Se han encontrado productos del vendedor ${sellerName}`,
+			products: products
+		});
+	} catch (error) {
+		return res.status(500).json({ message: "Error Interno del servidor", error });
+	}
+}
+
 export const getByID = async (req, res) => {
 	try {
 	    const { productId } = req.param;
@@ -124,16 +156,16 @@ export const getByID = async (req, res) => {
 
 export const getByCategory = async (req, res) => {
 	try {
-		const { categoryId } = req.params;
+		const { categoryName } = req.params;
 
-        if (!categoryId)
+        if (!categoryName)
             return res
                     .status(400)
                     .json({
                         message: "EL Id es necesario"
                     });
 
-		const products = await Product.find({ category_id: categoryId })
+		const products = await Product.find({ category_id: categoryName })
 				.select("-createdAt -updatedAt -__v");
 
 		if (!products)
@@ -155,16 +187,16 @@ export const getByCategory = async (req, res) => {
 
 export const getByBrand = async (req, res) => {
 	try {
-		const { brandId } = req.params;
+		const { brandName } = req.params;
 
-        if (!brandId)
+        if (!brandName)
             return res
                     .status(400)
                     .json({
                         message: "El Id de la marca es necesario"
                     });
 
-		const products = await Product.find({ brand_id: brandId })
+		const products = await Product.find({ brand_id: brandName })
 			.select("-createdAt -updatedAt -__v");
 
 		if (!products)

@@ -23,13 +23,17 @@ import {
 	createSchema,
 	getBySellerSchema,
 	getByIdSchema,
-	getByCategorySchema, getByBrandSchema,
+	getByCategorySchema,
+	getByBrandSchema,
+	getBySellerNameSchema,
 } from './product.schemas.js';
 import {
 	create,
 	getBySeller,
 	getByID,
-	getByCategory, getByBrand,
+	getByCategory,
+	getByBrand,
+	getBySellerName,
 } from './product.controller.js';
 
 const router = Router();
@@ -48,19 +52,25 @@ router.get(
 )
 
 router.get(
+    "/getBySellerName/:sellerName",
+    validateParamsSchema(getBySellerNameSchema),
+    getBySellerName
+);
+
+router.get(
 	"getByID/:productId",
 	validateParamsSchema(getByIdSchema),
 	getByID
 )
 
 router.get(
-    "/getByCategory/:categoryId",
+    "/getByCategory/:categoryName",
     validateParamsSchema(getByCategorySchema),
     getByCategory
 );
 
 router.get(
-    "/getByBrand/:brandId",
+    "/getByBrand/:brandName",
     validateParamsSchema(getByBrandSchema),
 	getByBrand
 );
