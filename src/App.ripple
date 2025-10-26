@@ -1,18 +1,18 @@
-import Home from "./pags/home.ripple";
-
 export component App() {
-	<div>
-	  <Home search={ () => {}} />
-	</div>
-}
+    <div class="app-container">
+        <nav class="nav">
+            <button class="link-btn" onClick={() => { location.hash = '/' }}>{"Home"}</button>
+            <button class="link-btn" onClick={() => { location.hash = '/login' }}>{"Login"}</button>
+        </nav>
 
-function searchAction(query: string) {
-    fetch(`http://localhost:3000/api/datas/search/${encodeURIComponent(query)}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Search results:", data);
-        })
-        .catch(error => {
-            console.error("Error during search:", error);
-        });
+        <div id="route-outlet" class="route-outlet"></div>
+
+        <style>
+            .app-container { padding: 16px; }
+            .nav { display: flex; gap: 12px; margin-bottom: 16px; }
+            .link-btn { background: none; border: none; color: #0077cc; cursor: pointer; padding: 0; }
+            .link-btn:hover { text-decoration: underline; }
+            .route-outlet { min-height: 200px; }
+        </style>
+    </div>
 }

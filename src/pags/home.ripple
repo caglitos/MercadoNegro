@@ -1,11 +1,11 @@
 import Search from "../organisms/search.ripple";
 
-export default component Home(props: { search: () => void }) {
+export default component Home() {
 
     <div class="home-container">
         <h1>{"Welcome to the Home Page"}</h1>
         
-        <Search action={props.search} />
+        <Search />
 
         <style>
             .home-container {

@@ -1,6 +1,6 @@
 import SearchButton from "../molecules/search.button.ripple";
 
-export default component Search(props: { action: () => void }) {
+export default component Search(props: { }) {
 
     <div class="search-container">
         <div class="search-line">
@@ -8,7 +8,7 @@ export default component Search(props: { action: () => void }) {
             <input type="text" placeholder="Buscar" class="search-input" />
         
             <label>
-                <SearchButton action={props.action} />
+                <SearchButton />
             </label>
         </div>
 

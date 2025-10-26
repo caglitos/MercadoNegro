@@ -1,5 +1,5 @@
-export default component Search(props: { action: () => void }) {
-    <div class="search-button" onClick={props.action}>
+export default component Search( ) {
+    <div class="search-button" onClick={() => {}}>
         <div class="search-button-circle">
         </div>
         <div class="search-button-line">
