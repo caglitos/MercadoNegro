@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon ./src/index.js"
+    "dev": "nodemon ./src/index.mjs"
   },
   "dependencies": {
     "bcryptjs": "3.0.2",
@@ -17,6 +17,7 @@
     "nodemailer": "^7.0.9",
     "nodemon": "^3.1.10",
     "pnpm": "^10.18.3",
+    "react-router": "^7.9.4",
     "zod": "3.24.3"
   },
   "devDependencies": {

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import app from "./app.js";
-import { connectDB } from "./db.js";
-import {port} from "./config.js";
+import app from "./app.mjs";
+import { connectDB } from "./db.mjs";
+import {port} from "./config.mjs";
 
 connectDB();
 

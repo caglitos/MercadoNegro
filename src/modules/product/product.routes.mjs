@@ -14,11 +14,11 @@
 * limitations under the License.
 */
 import { Router } from "express";
-import { authRequired } from "../../middlewares/validateToken.js";
+import { authRequired } from "../../middlewares/validateToken.mjs";
 import {
 	validateBodySchema,
 	validateParamsSchema
-} from "../../middlewares/validator.middleware.js";
+} from "../../middlewares/validator.middleware.mjs";
 import {
 	createSchema,
 	getBySellerSchema,
@@ -26,15 +26,15 @@ import {
 	getByCategorySchema,
 	getByBrandSchema,
 	getBySellerNameSchema,
-} from './product.schemas.js';
+} from './product.schemas.mjs';
 import {
 	create,
 	getBySeller,
 	getByID,
 	getByCategory,
 	getByBrand,
-	getBySellerName,
-} from './product.controller.js';
+	getBySellerName, getRandomProducts,
+} from './product.controller.mjs';
 
 const router = Router();
 
@@ -58,7 +58,7 @@ router.get(
 );
 
 router.get(
-	"getByID/:productId",
+	"/getByID/:productId",
 	validateParamsSchema(getByIdSchema),
 	getByID
 )
@@ -75,5 +75,9 @@ router.get(
 	getByBrand
 );
 
+router.get(
+    "/getRandomProducts",
+    getRandomProducts
+);
 
 export default router;

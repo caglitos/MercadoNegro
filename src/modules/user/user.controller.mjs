@@ -16,13 +16,13 @@
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
-import {createAccesToken} from "../../libs/jwt.js";
-import User from "./user.model.js";
+import {createAccesToken} from "../../libs/jwt.mjs";
+import User from "./user.model.mjs";
 import {
     EMAIL_USER,
     EMAIL_PASS,
     EMAIL_FROM,
-} from "../../config.js";
+} from "../../config.mjs";
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -292,6 +292,8 @@ export const sellerRegister = async (req, res) => {
         userFound.user_type = "both";
 
         const userSaved = await userFound.save();
+
+		res.cookie("sellerId", userSaved._id);
 
         return res.status(201).json({ 
             message: "Vendedor registrado con exito" ,

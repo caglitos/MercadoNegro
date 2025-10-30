@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import { Router } from 'express';
-import { authRequired } from '../../middlewares/validateToken.js';
+import { authRequired } from '../../middlewares/validateToken.mjs';
 import {
 	validateBodySchema,
 	validateParamsSchema
-} from '../../middlewares/validator.middleware.js';
+} from '../../middlewares/validator.middleware.mjs';
 import {
 	register,
 	login,
@@ -27,7 +27,7 @@ import {
 	deleteAccount,
 	faVerification,
 	sellerRegister, getSellerById,
-} from './user.controller.js';
+} from './user.controller.mjs';
 import {
 	registerSchema,
 	loginSchema,
@@ -36,7 +36,7 @@ import {
 	faVerificationSchema,
 	sellerRegisterSchema,
 	getSellerByID
-} from './user.schemas.js';
+} from './user.schemas.mjs';
 
 const router = Router();
 

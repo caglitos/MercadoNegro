@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import Product from "./product.model.js";
+import Product from "./product.model.mjs";
 
 export const create = async (req, res) => {
     try {
@@ -28,8 +28,16 @@ export const create = async (req, res) => {
             status
           } = req.body;
 
-		const sellerId = req.cookies.UserId;
+		const { sellerId } = req.cookies;
 
+		if (!sellerId)
+		    return res
+		            .status(400)
+		            .json({
+		                message: "Debes registrarte o iniciar sesión como vendedor para crear un producto"
+		            });
+		
+		
         const newProduct = new Product({
 			seller_id: sellerId,
             category_id: categoryId,
@@ -77,14 +85,12 @@ export const getBySeller = async (req, res) => {
 			await Product.find({ seller_id: sellerId })
 				.select("-createdAt -updatedAt -__v");
 
-		if (!products)
+		if (!products || products.length === 0)
 		    return res
 		            .status(404)
 		            .json({
 		                message: "No se encontraron productos de este vendedor"
 		            });
-
-
 
 		return res.status(200).json({
 			message: `Se han encontrado ${products.length} productos del vendedor`,
@@ -110,7 +116,7 @@ export const getBySellerName = async (req, res) => {
 			await Product.find({ seller_name: sellerName })
 				.select("-createdAt -updatedAt -__v");
 		
-		if (!products)
+		if (!products || products.length === 0)
 		    return res
 		            .status(404)
 		            .json({
@@ -129,8 +135,7 @@ export const getBySellerName = async (req, res) => {
 
 export const getByID = async (req, res) => {
 	try {
-	    const { productId } = req.param;
-
+	    const { productId } = req.params;
 
 		if (!productId)
 		    return res
@@ -168,7 +173,7 @@ export const getByCategory = async (req, res) => {
 		const products = await Product.find({ category_id: categoryName })
 				.select("-createdAt -updatedAt -__v");
 
-		if (!products)
+		if (!products || products.length === 0)
 		    return res
 		            .status(404)
 		            .json({
@@ -199,7 +204,7 @@ export const getByBrand = async (req, res) => {
 		const products = await Product.find({ brand_id: brandName })
 			.select("-createdAt -updatedAt -__v");
 
-		if (!products)
+		if (!products || products.length === 0)
 		    return res
 		            .status(404)
 		            .json({
@@ -209,6 +214,28 @@ export const getByBrand = async (req, res) => {
 
 		return res.status(200).json({
 		    message: `Se han encontrado ${products.length} productos de la marca`,
+			productos: products
+		});
+	} catch (error) {
+		return res.status(500).json({ message: "Error interno del servidor", error });
+	}
+}
+
+export const getRandomProducts = async (req, res) => {
+	try {
+		const products = await Product.aggregate([ { $sample: { size: 10 } } ])
+			.project({ createdAt: 0, updatedAt: 0, __v: 0 });
+
+
+		if (!products || products.length === 0)
+		    return res
+		            .status(404)
+		            .json({
+		                message: "No se encontraron productos"
+		            });
+
+		return res.status(200).json({
+		    message: `Productos aleatorios obtenidos exitosamente`,
 			productos: products
 		});
 	} catch (error) {

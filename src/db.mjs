@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import mongoose from "mongoose";
-import { db } from "./config.js";
+import { db } from "./config.mjs";
 
 export const connectDB = async () => {
     console.log(">>> Conecting to DB...");

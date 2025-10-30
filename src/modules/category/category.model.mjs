@@ -21,7 +21,7 @@ import mongoose from "mongoose";
 const categorySchema = new mongoose.Schema(
     {
         parent_id: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-        name: { type: String, required: true },
+        name: { type: String, required: true, unique: true },
         slug: String,
         path: String,
         attributes_schema: Object,

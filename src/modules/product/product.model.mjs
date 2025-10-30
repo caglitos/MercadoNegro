@@ -13,8 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
-// src/model/product.model.js
+// src/model/product.model.mjs
 
 import mongoose from "mongoose";
 import { string } from 'zod';
