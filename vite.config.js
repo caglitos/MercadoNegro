@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite';
-import { ripple } from 'vite-plugin-ripple';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-	plugins: [ripple()],
+	plugins: [react()],
 	server: {
 		port: 4000,
 	},

@@ -6,10 +6,11 @@
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
 		"moduleResolution": "bundler",
-		"jsx": "preserve",
-		"jsxImportSource": "ripple",
+		"jsx": "react-jsx",
 		"noEmit": true,
 		"isolatedModules": true,
-		"plugins": [{ "name": "typescript-plugin-ripple" }]
-	}
+		"strict": true,
+		"skipLibCheck": true
+	},
+	"include": ["src"]
 }

@@ -1,0 +1,97 @@
+.page-container {
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 24px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.page-container h1 {
+	margin-bottom: 16px;
+	color: #333;
+}
+
+.page-container p {
+	margin-bottom: 24px;
+	color: #666;
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.form-group label {
+	font-weight: 600;
+	color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+	padding: 10px 12px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 14px;
+	font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+	outline: none;
+	border-color: #0077cc;
+	box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.1);
+}
+
+.btn {
+	padding: 12px 24px;
+	background-color: #0077cc;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.btn:hover {
+	background-color: #005fa3;
+}
+
+.btn-secondary {
+	background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+	background-color: #5a6268;
+}
+
+.btn-group {
+	display: flex;
+	gap: 12px;
+}
+
+.profile-view {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.profile-field {
+	padding: 12px;
+	background-color: #f8f9fa;
+	border-radius: 4px;
+}
+
+.profile-field strong {
+	display: inline-block;
+	width: 100px;
+}

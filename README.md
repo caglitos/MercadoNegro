@@ -1,6 +1,14 @@
-# Ripple Basic Template
+# MercadoNegro Frontend
 
-A minimal Ripple application template with TypeScript and Vite.
+A basic React application for MercadoNegro with TypeScript and Vite.
+
+## Features
+
+- Register
+- Login
+- Two-Factor Authentication (2FA)
+- Seller Registration
+- User Profile
 
 ## Getting Started
 
@@ -23,27 +31,14 @@ A minimal Ripple application template with TypeScript and Vite.
 
 ## Code Formatting
 
-This template includes Prettier with the Ripple plugin for consistent code formatting.
+This template includes Prettier for consistent code formatting.
 
 ### Available Commands
 
 - `npm run format` - Format all files
 - `npm run format:check` - Check if files are formatted correctly
 
-### Configuration
-
-Prettier is configured in `.prettierrc` with the following settings:
-
-- Uses tabs for indentation
-- Single quotes for strings
-- 100 character line width
-- Includes the `prettier-plugin-ripple` for `.ripple` file formatting
-
-### VS Code Integration
-
-For the best development experience, install the [Prettier VS Code extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and the [Ripple VS Code extension](https://marketplace.visualstudio.com/items?itemName=ripplejs.ripple-vscode-plugin).
-
 ## Learn More
 
-- [Ripple Documentation](https://github.com/trueadm/ripple)
+- [React Documentation](https://react.dev/)
 - [Vite Documentation](https://vitejs.dev/)

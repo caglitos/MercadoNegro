@@ -1,0 +1,30 @@
+.app-container {
+	padding: 16px;
+	min-height: 100vh;
+}
+
+.nav {
+	display: flex;
+	gap: 16px;
+	margin-bottom: 24px;
+	padding: 16px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+	color: #0077cc;
+	text-decoration: none;
+	padding: 8px 16px;
+	border-radius: 4px;
+	transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+	background-color: #f0f0f0;
+}
+
+.route-outlet {
+	min-height: 400px;
+}
