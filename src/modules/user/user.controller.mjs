@@ -35,7 +35,7 @@ export const register = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const faCode = crypto.randomBytes(4).toString("hex").toUpperCase();
+        const faCode = crypto.randomBytes(3).toString("hex").toUpperCase();
 
         const hashedFaCode = await bcrypt.hash(faCode, 10);
 
@@ -97,7 +97,7 @@ export const login = async (req, res) => {
             return res.status(400).json({message: "Las contraseña es incorrecta"});
 
         const faCode = crypto
-            .randomBytes(4)
+            .randomBytes(3)
             .toString("hex")
             .toUpperCase();
 
@@ -270,6 +270,46 @@ export const faVerification = async (req, res) => {
         return res.status(500).json({message: "Error interno del servidor", error});
     }
 };
+
+export const changeUsername = async (req, res) => {
+	try {
+		const { password, newUsername } = req.body;
+		const { UserId } = req.cookies;
+
+        if (!password )
+            return res
+                    .status(400)
+                    .json({
+                        message: "La contraseña es requerida"
+                    });
+
+        if (!newUsername)
+            return res
+                    .status(400)
+                    .json({
+                        message: "El nuevo nombre de usuario es requerido"
+                    });
+
+		const userFound = await User.findById(UserId);
+
+		const isMatch = await bcrypt.compare(password, userFound.hashed_password);
+
+		if (!isMatch)
+			return res
+				.status(400)
+				.json({ message: "La contraseña es incorrecta" });
+
+		userFound.username = newUsername;
+
+		await userFound.save();
+
+		return res.status(200).json({
+		    message: "El nombre de usuario ha cambiado a " + newUsername,
+		});
+	} catch (error) {
+		return res.status(500).json({ message: "Error interno  del servidor", error });
+	}
+}
 
 export const sellerRegister = async (req, res) => {
     try {

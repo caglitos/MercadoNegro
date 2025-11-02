@@ -34,9 +34,8 @@ app.use((req, res, next) => {
 	].filter(Boolean));
 
 	const origin = req.headers.origin;
-	if (origin && allowedOrigins.has(origin)) {
+	if (origin && allowedOrigins.has(origin))
 		res.header("Access-Control-Allow-Origin", origin);
-	}
 	// If no origin header or not in list, do not set ACAO to avoid reflecting arbitrary origins
 
 	res.header("Access-Control-Allow-Credentials", "true");

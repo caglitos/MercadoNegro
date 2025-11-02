@@ -37,7 +37,12 @@ export const deleteAccountParamsSchema = z.object({
 
 export const faVerificationSchema = z.object({
     email: z.string().email(),
-    code: z.string().length(8),
+    code: z.string().length(6),
+});
+
+export const changeUsernameSchema = z.object({
+	newUsername: z.string(),
+	password: z.string(),
 });
 
 export const sellerRegisterSchema = z.object({
@@ -47,3 +52,4 @@ export const sellerRegisterSchema = z.object({
 export const getSellerByID = z.object({
 	sellerId: z.string().length(24),
 });
+
