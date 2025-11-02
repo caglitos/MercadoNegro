@@ -45,6 +45,11 @@ export const changeUsernameSchema = z.object({
 	password: z.string(),
 });
 
+export const changeEmailSchema = z.object({
+	newEmail: z.string().email(),
+	password: z.string(),
+});
+
 export const sellerRegisterSchema = z.object({
     password: z.string(),
 });

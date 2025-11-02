@@ -311,6 +311,46 @@ export const changeUsername = async (req, res) => {
 	}
 }
 
+export const changeEmail = async (req, res) => {
+	try {
+		const { password, newEmail } = req.body;
+		const { UserId } = req.cookies;
+
+		if (!password )
+			return res
+				.status(400)
+				.json({
+					message: "La contraseña es requerida"
+				});
+
+		if (!newEmail)
+			return res
+				.status(400)
+				.json({
+					message: "El nuevo email es requerido"
+				});
+
+		const userFound = await User.findById(UserId);
+
+		const isMatch = await bcrypt.compare(password, userFound.hashed_password);
+
+		if (!isMatch)
+			return res
+				.status(400)
+				.json({ message: "La contraseña es incorrecta" });
+
+		userFound.email = newEmail;
+
+		await userFound.save();
+        
+		return res.status(200).json({
+		    message: "El email ha cambiado a " + newEmail,
+		});
+	} catch (error) {
+		return res.status(500).json({ message: "Error interno del servidr", error });
+	}
+}
+
 export const sellerRegister = async (req, res) => {
     try {
         const { UserId } = req.cookies;

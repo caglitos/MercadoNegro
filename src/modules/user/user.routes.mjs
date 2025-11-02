@@ -27,7 +27,7 @@ import {
 	deleteAccount,
 	faVerification,
 	sellerRegister,
-	getSellerById, changeUsername,
+	getSellerById, changeUsername, changeEmail,
 } from './user.controller.mjs';
 import {
 	registerSchema,
@@ -36,7 +36,7 @@ import {
 	deleteAccountParamsSchema,
 	faVerificationSchema,
 	sellerRegisterSchema,
-	getSellerByID, changeUsernameSchema,
+	getSellerByID, changeUsernameSchema, changeEmailSchema,
 } from './user.schemas.mjs';
 
 const router = Router();
@@ -58,9 +58,13 @@ router.delete(
 
 router.post('/verify-2fa', validateBodySchema(faVerificationSchema), faVerification);
 
-router.put('/change-username', validateBodySchema(changeUsernameSchema), changeUsername);
+router.put('/change-username', authRequired, validateBodySchema(changeUsernameSchema), changeUsername);
 
-
+router.put(
+    "/change-email",
+    validateBodySchema(changeEmailSchema),
+	changeEmail
+);
 
 // Seller
 router.post(
