@@ -48,6 +48,42 @@ export const createSchema = z.object({
 		.optional(),
 });
 
+export const modifyProductParamsSchema = z.object({
+	productId: objectId,
+})
+
+export const modifyProductBodySchema = z.object({
+	categoryId: z.string()
+		.length(24, 'El ID de la categoría debe tener 24 caracteres')
+		.optional(),
+	brandId: z.string()
+		.length(24, 'El ID de la marca debe tener 24 caracteres')
+		.optional(),
+	title: z.string()
+		.min(1, 'El título es obligatorio')
+		.optional(),
+	subtitle: z.string()
+		.optional(),
+	shortDescription: z.string()
+		.optional(),
+	longDescription: z.string()
+		.optional(),
+	condition: z.enum(
+		[
+			'new',
+			'used',
+			'refurbished'
+		])
+		.optional(),
+	status: z.enum(
+		['draft',
+			'published',
+			'paused',
+			'closed'
+		])
+		.optional(),
+});
+
 export const getByIdSchema = z.object({
 	productId: objectId,
 });

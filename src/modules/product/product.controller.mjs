@@ -70,6 +70,38 @@ export const create = async (req, res) => {
     }
 }
 
+export const modifyProduct = async (req, res) => {
+	try {
+		const { title, subtitle, short_description, long_description, condition, status } = req.body;
+        const { productId } = req.params;
+
+		const productToUpdate = await Product.findById(productId);
+
+		if (!productToUpdate)
+		    return res
+		            .status(404)
+		            .json({
+		                message: "No se encontro el producto a modificar"
+		            });
+
+		productToUpdate.title = title || productToUpdate.title;
+		productToUpdate.subtitle = subtitle || productToUpdate.subtitle;
+		productToUpdate.short_description = short_description || productToUpdate.short_description;
+		productToUpdate.long_description = long_description || productToUpdate.long_description;
+		productToUpdate.condition = condition || productToUpdate.condition;
+		productToUpdate.status = status || productToUpdate.status;
+
+		const productSaved = await productToUpdate.save();
+        
+		return res.status(200).json({
+		    message: "Producto modificado exitosamente",
+			productSaved
+		});
+	} catch (error) {
+		return res.status(500).json({ message: "Error interno del servidor", error });
+	}
+}
+
 export const getBySeller = async (req, res) => {
 	try {
 		const { sellerId } = req.params;
