@@ -1,0 +1,14 @@
+.feature {
+    padding-top: 67px;
+    padding-bottom: 67px;
+    min-width: 450px;
+    border: 1px solid #6D1111;
+    font-size: 30px;
+    color: #A84E4E;
+    border-radius: 50px ;
+}
+
+.category-filter-title{
+    font-size: 64px;
+    margin-bottom: 20px;
+}

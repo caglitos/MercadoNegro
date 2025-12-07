@@ -1,0 +1,7 @@
+.img-scroll {
+    display: block;
+    scroll-behavior: smooth;
+    height: 500px;
+    overflow: hidden;
+
+}

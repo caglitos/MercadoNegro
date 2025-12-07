@@ -1,0 +1,26 @@
+.two-fa {
+    border-radius: 25px;
+    position: relative;
+    width: 100px;
+    height: 105px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 25px;
+    background-color: #D7E8FF;
+}
+
+.two-fa input {
+    width: 50px;
+    height: 100%;
+    background-color: #00000000;
+    border: #00000000;
+    border-bottom: black solid 2px;
+    outline: none;
+    font-size: 80px;
+    transition: 0.2s;
+}
+
+.two-fa input:focus {
+    border-bottom: #5DA3FD solid 2px;
+}

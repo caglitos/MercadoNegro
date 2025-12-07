@@ -1,0 +1,12 @@
+.offers{
+    font-size: 50px;
+    margin-bottom: 70px;
+}
+
+.carousel {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    display: flex;
+    scroll-behavior: smooth;
+}

@@ -1,0 +1,21 @@
+.big-input {
+    position: relative;
+    padding: 10px 0;
+    margin: 0;
+
+    border: none;
+    border-bottom: black solid 1px;
+    border-radius: 0;
+    outline: none;
+
+    font-size: 75px;
+    text-align: right;
+
+    background: transparent;
+
+    width: 700px;
+}
+
+.big-input::placeholder {
+    text-align: right;
+}

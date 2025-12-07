@@ -1,0 +1,25 @@
+.SettingsBurger {
+    position: relative;
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+img.burger {
+    width: 80px;
+    height: 80px;
+    display: block;
+    object-fit: contain;
+}

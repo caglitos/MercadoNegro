@@ -1,0 +1,37 @@
+.register-title {
+    font-size: 70px;
+    text-align: right;
+}
+
+.login-href {
+    text-decoration: underline;
+    color: var(--color-blue900);
+    font-size: 30px;
+}
+
+.register-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+    height: calc(100vh - 130px);
+    width: 100vw;
+}
+
+.left-side {
+    position: relative;
+    left: 50px;
+}
+
+.register-form {
+    position: relative;
+
+    right: 50px;
+
+    display: flex;
+    justify-content: right;
+    flex-direction: column;
+
+    gap: 20px;
+}

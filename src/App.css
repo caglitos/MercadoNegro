@@ -1,0 +1,115 @@
+* {
+    --bg-color: white;
+    --color-blue900: #4997FD;
+    --color-blue1000: #358CFD;
+    --color-grayscale800: #333333;
+
+    font-family: "Roboto", sans-serif;
+    font-weight: lighter;
+
+
+}
+html, body, * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+    display: none;
+}
+div {
+    padding: 0;
+    margin: 0;
+}
+
+h2 {
+    margin: 0;
+    padding: 0;
+}
+
+span {
+    margin: 0;
+    padding: 0;
+}
+
+.flex{
+    display: flex;
+}
+
+/*directions*/
+.column {
+    display: flex;
+    flex-direction: column;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+}
+.left {
+    display: flex;
+    justify-content: flex-start;
+}
+.right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/*gaps*/
+.gap-10{
+    gap: 10px;
+}
+.gap-20 {
+    gap: 20px;
+}
+.gap-30 {
+    gap: 30px;
+}
+.gap-40 {
+    gap: 40px;
+}
+.gap-60 {
+    gap: 60px;
+}
+.spacer-20 {
+    height: 20px;
+}
+.spacer-30 {
+    height: 30px;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.centerv{
+    display: flex;
+    align-items: center;
+}
+.centerh{
+    display: flex;
+    justify-content: center;
+}
+
+
+/*sizes*/
+.max-size {
+    width: 100%;
+    height: 100%;
+}
+.width-1 {
+    width: 542px;
+}
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pad-30 {
+    padding: 30px;
+}
+
+.margin-bottom-250 {
+    margin-bottom: 250px;
+}

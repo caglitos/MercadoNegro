@@ -1,0 +1,20 @@
+.search-input {
+    width: 1500px;
+    padding: 10px 0 0 20px;
+    border: none;
+    border-bottom: 2px solid #000000;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.search-input:focus {
+    outline: none;
+    border-bottom: 2px solid #007BFF;
+}
+
+.search-icon {
+    z-index: 0;
+    position: absolute;
+    top: 205px;
+    right: calc(((100% - 1500px) / 2) + 20px);
+}

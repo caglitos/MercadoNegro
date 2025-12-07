@@ -1,0 +1,10 @@
+.big-button {
+    background-color: var(--color-blue900);
+    border-color: var(--color-blue1000);
+    border-radius: 50px;
+    height: 130px;
+    width: 500px;
+    font-size: 60px;
+    text-transform: capitalize;
+}
+

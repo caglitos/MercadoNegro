@@ -1,0 +1,35 @@
+.app-menu {
+    z-index: 1;
+    position: fixed;
+    display: flex;
+    height: 130px;
+    width: 100vw;
+    flex-direction: row;
+    background-color: white;
+}
+
+.app-menu .line{
+    position: fixed;
+    top: 130px;
+    left: 0;
+    width: 100vw;
+    z-index: 5; /* por debajo de los iconos */
+}
+
+.app-menu .SettingsBurger{
+    position: fixed;
+    left: calc(100vw - 225px);
+    top: 25px;
+    z-index: 10; /* encima de la línea */
+}
+
+.app-menu .app-logo{
+    position: fixed;
+    left: 25px;
+    top: 25px;
+    z-index: 10; /* encima de la línea */
+}
+
+.spacer{
+    height: 130px;
+}

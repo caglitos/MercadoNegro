@@ -1,0 +1,25 @@
+.product-title {
+    font-size: 120px;
+    margin-bottom: 10px;
+    margin-right: 120px;
+}
+
+.product-subtitle {
+    font-size: 80px;
+    margin-bottom: 40px;
+    margin-right: 120px;
+}
+
+.product-price {
+    font-size: 60px;
+    margin-bottom: 10px;
+    margin-right: 140px;
+}
+
+.description {
+    background: #c7c7c7;
+    border-radius: 20px 0 0 20px;
+    padding: 40px;
+    height: 400px;
+    width: 980px;
+}
