@@ -17,7 +17,7 @@
 
 import mongoose from "mongoose";
 
-export const user = new mongoose.Schema(
+const user = new mongoose.Schema(
     {
         username: {
             type: String,

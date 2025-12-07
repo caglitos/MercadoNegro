@@ -13,3 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+import z from "zod";
+
+export const getByOwnerParamsSchema = z.object({
+	ownerId: z.string().length(24),
+});
+
+export const saveImageSchema = z.object({
+	ownerType: z.enum(["product", "listing", "user", "brand"]),
+	ownerId: z.string().length(24),
+	imgURI: z.string().url(),
+	altText: z.string().optional(),
+	sortIndex: z.number().optional(),
+	isPrimary: z.boolean().optional()
+});

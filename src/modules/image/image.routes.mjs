@@ -13,3 +13,25 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+import { Router } from 'express';
+import { validateBodySchema, validateParamsSchema } from '../../middlewares/validator.middleware.mjs';
+import { getByOwner, getMain, Save } from './image.controller.mjs';
+import { getByOwnerParamsSchema, saveImageSchema } from './image.schemas.mjs';
+
+const router = Router();
+
+router.post("/save", validateBodySchema(saveImageSchema) ,Save);
+
+router.get(
+    "/getByOwner/:ownerId",
+    validateParamsSchema(getByOwnerParamsSchema),
+    getByOwner
+);
+
+router.get(
+    "/getMain/:ownerId",
+    validateParamsSchema(getByOwnerParamsSchema),
+    getMain
+);
+
+export default router;

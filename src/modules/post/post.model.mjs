@@ -19,42 +19,43 @@
 import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
-    {
-        product_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Product",
-            required: true,
-        },
-        seller_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-        },
-        sku: String,
-        external_id: String,
-        price: { type: Number, required: true },
-        currency: { type: String, default: "USD" },
-        available_quantity: { type: Number, default: 0 },
-        reserved_quantity: { type: Number, default: 0 },
-        warranty: String,
-        listing_type: {
-            type: String,
-            enum: ["standard", "premium", "classified"],
-            default: "standard",
-        },
-        buy_box: { type: Boolean, default: false },
-        attributes: Object,
-        shipping_profile_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "ShippingProfile",
-        },
-        status: {
-            type: String,
-            enum: ["active", "inactive", "deleted", "sold_out"],
-            default: "active",
-        },
-    },
-    { timestamps: true }
+	{
+		product_id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Product",
+			required: true,
+		},
+		seller_id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+		},
+		sku: String,
+		external_id: String,
+		price: { type: Number, required: true },
+		currency: { type: String, default: "USD" },
+		available_quantity: { type: Number, default: 0 },
+		reserved_quantity: { type: Number, default: 0 },
+		warranty: String,
+		listing_type: {
+			type: String,
+			enum: ["standard", "premium", "classified"],
+			default: "standard",
+		},
+		buy_box: { type: Boolean, default: false },
+		attributes: { type: mongoose.Schema.Types.Mixed },
+		shipping_profile_id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "ShippingProfile",
+			required: false,
+		},
+		status: {
+			type: String,
+			enum: ["active", "inactive", "deleted", "sold_out"],
+			default: "active",
+		},
+	},
+	{ timestamps: true }
 );
 
 export default mongoose.model("Listing", postSchema);

@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import bcrypt from "bcryptjs";
-import nodemailer from "nodemailer";
-import crypto from "crypto";
-import {createAccesToken} from "../../libs/jwt.mjs";
-import User from "./user.model.mjs";
-import {
-    EMAIL_USER,
-    EMAIL_PASS,
-    EMAIL_FROM,
-} from "../../config.mjs";
+import bcrypt from 'bcryptjs';
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
+import { createAccesToken } from '../../libs/jwt.mjs';
+import User from './user.model.mjs';
+import { EMAIL_FROM, EMAIL_PASS, EMAIL_USER } from '../../config.mjs';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -31,7 +27,7 @@ const transporter = nodemailer.createTransport({
 
 export const register = async (req, res) => {
     try {
-        const {username, email, password, displayName} = req.body;
+        const { username, email, password, displayName } = req.body;
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -42,7 +38,7 @@ export const register = async (req, res) => {
         const newUser = new User({
             email: email,
             hashed_faCode: hashedFaCode,
-            faCodeExpiration: Date.now() + 900000, // 15 minutes
+            faCodeExpiration: Date.now() + 900000, // 15 mins
         });
 
         await newUser.save();
@@ -56,29 +52,76 @@ export const register = async (req, res) => {
                    <p>Este código tiene una duración de 15 minutos</p>`
         });
 
-        res.cookie("username", username);
-        res.cookie("passwordHash", hashedPassword);
-        res.cookie("displayName", displayName);
+        const cookieOptions = {
+            httpOnly: false, // Permite que JavaScript acceda a estas cookies
+            sameSite: 'lax', // Permite cookies entre diferentes puertos del mismo dominio
+            path: '/',
+            maxAge: 15 * 60 * 1000 // 15 minutos
+        };
 
-        return res.status(201).json({message: "Codigo de verificacion enviado al email"});
+        res.cookie("username", username, cookieOptions);
+        res.cookie("passwordHash", hashedPassword, cookieOptions);
+        res.cookie("displayName", displayName, cookieOptions);
+
+        return res.status(200).json({message: "Codigo de verificacion enviado al email"});
     } catch (error) {
         try {
             const { email } = req.body;
 
             const userFound = await User.findOne({email});
+			
+			if (!userFound)
+			    return res
+			            .status(500)
+			            .json({
+			                message: "Error interno del servidor",
+			                error: error,
+			            });
+			
 
-            if (userFound)
-                return res.status(400).json({message: "El email ya esta registrado"});
+			let userComplete = false;
+
+			if (userFound.hashed_password)
+				userComplete = true
+
+			if (userComplete)
+				return res.status(400).json({message: "El email ya esta registrado"});
+			else {
+				try {
+					if (userFound.faCodeExpiration > Date.now())
+						return res.status(400).json({message: "Tienes un codigo de verificacion activo, revisa tu email"});
+
+					const faCode = crypto.randomBytes(3).toString("hex").toUpperCase();
+
+					userFound.hashed_faCode = await bcrypt.hash(faCode, 10);
+					userFound.faCodeExpiration = Date.now() + 900000; // 15 minutes
+
+					await userFound.save();
+
+					await transporter.sendMail({
+						from: EMAIL_FROM, // sender address
+						to: email,
+						subject: "Bienvenido! Verifica tu email",
+						html: `<h1>Gracias por registrarte</h1>
+				    		<p>Tu código de verificación es: <b>${faCode}</b></p>
+				    		<p>Este código tiene una duración de 15 minutos</p>`
+					});
+					return res
+						.status(201)
+						.json({message: "Codigo de verificacion enviado al email"});
+				} catch (error) {
+
+					return res
+						.status(500)
+						.json({message: "Error interno del servidor", error: error});
+				}
+			}
         } catch (error) {
             return res.status(500).json({
                 message: "Error interno del servidor",
                 error: error,
             });
         }
-
-        return res
-            .status(500)
-            .json({message: "Error interno del servidor", error: error});
     }
 }
 
@@ -112,7 +155,7 @@ export const login = async (req, res) => {
             {new: true}
         );
 
-        const info = await transporter.sendMail({
+		await transporter.sendMail({
             from: EMAIL_FROM, // sender address
             to: email,
             subject: "Codigo de verificacion por dos factores para iniciar sesion",
@@ -137,7 +180,7 @@ export const profile = async (req, res) => {
     try {
         const { UserId } = req.cookies;
 
-        if (!UserId) return res.status(401).json({message: "No autorizado: el id no fue encontrado"});
+        if (!UserId) return res.status(404).json({message: "No autorizado: el id no fue encontrado"});
 
         const userFound =
             await User.findById(UserId)
@@ -155,24 +198,24 @@ export const profile = async (req, res) => {
 
 export const deleteAccount = async (req, res) => {
     try {
-        const {id} = req.params;
         const {UserId} = req.cookies;
         const {password} = req.body;
 
-        if (id !== UserId)
-            return res
-                .status(401)
-                .json({message: "No estas autorizado a eliminar la cuenta de otro usuario"});
+        const userFound = await User.findById(UserId);
 
-        const userFound = await User.findById(id);
-        if (!userFound) return res.status(404).json({message: "Usuario no encontrado"});
+		if (!userFound)
+			return res
+				.status(404)
+				.json({
+					message: "Usuario no encontrado"
+				});
 
         const isMatch = await bcrypt.compare(password, userFound.hashed_password);
 
         if (!isMatch)
             return res.status(400).json({message: "La contraseña es incorrecta"});
 
-        await User.findByIdAndDelete(id);
+        await User.findByIdAndDelete(UserId);
 
         res.clearCookie("token");
         res.clearCookie("UserId");
@@ -189,6 +232,7 @@ export const deleteAccount = async (req, res) => {
 };
 
 export const faVerification = async (req, res) => {
+	console.log("Verificando 2FA...");
     try {
         const { email, code } = req.body;
         const { username, passwordHash, displayName } = req.cookies;
@@ -223,8 +267,7 @@ export const faVerification = async (req, res) => {
 
         if (!isMatch)
             return res.status(400).json({message: "El codigo es incorrecto."});
-
-
+		
         await userFound.save();
 
         const token = await createAccesToken({id: userFound._id});
@@ -242,8 +285,22 @@ export const faVerification = async (req, res) => {
             res.clearCookie("displayName");
         }
 
-        res.cookie("token", token);
-        res.cookie("UserId", userFound._id);
+        const tokenCookieOptions = {
+            httpOnly: true, // El token debe ser httpOnly por seguridad
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 24 * 60 * 60 * 1000 // 24 horas
+        };
+
+        const userIdCookieOptions = {
+            httpOnly: false, // Permitimos acceso desde JavaScript si es necesario
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 24 * 60 * 60 * 1000 // 24 horas
+        };
+
+        res.cookie("token", token, tokenCookieOptions);
+        res.cookie("UserId", userFound._id.toString(), userIdCookieOptions);
 
         await transporter.sendMail({
             from: EMAIL_FROM,
@@ -337,7 +394,7 @@ export const changeEmail = async (req, res) => {
 		if (!isMatch)
 			return res
 				.status(400)
-				.json({ message: "La contraseña es incorrecta" });
+				.json({ g: "La contraseña es incorrecta" });
 
 		userFound.email = newEmail;
 
@@ -347,7 +404,7 @@ export const changeEmail = async (req, res) => {
 		    message: "El email ha cambiado a " + newEmail,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Error interno del servidr", error });
+		return res.status(500).json({ message: "Error interno del servidor", error });
 	}
 }
 
@@ -373,7 +430,14 @@ export const sellerRegister = async (req, res) => {
 
         const userSaved = await userFound.save();
 
-		res.cookie("sellerId", userSaved._id);
+		const sellerCookieOptions = {
+            httpOnly: false,
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 24 * 60 * 60 * 1000 // 24 horas
+        };
+
+		res.cookie("sellerId", userSaved._id.toString(), sellerCookieOptions);
 
         return res.status(201).json({ 
             message: "Vendedor registrado con exito" ,

@@ -25,7 +25,9 @@ import {
 	getByIdSchema,
 	getByCategorySchema,
 	getByBrandSchema,
-	getBySellerNameSchema, modifyProductParamsSchema, modifyProductBodySchema,
+	getBySellerNameSchema,
+	modifyProductParamsSchema,
+	modifyProductBodySchema, searchProductsSchema,
 } from './product.schemas.mjs';
 import {
 	create,
@@ -33,7 +35,8 @@ import {
 	getByID,
 	getByCategory,
 	getByBrand,
-	getBySellerName, getRandomProducts, modifyProduct,
+	getBySellerName,
+	modifyProduct, searchProducts,
 } from './product.controller.mjs';
 
 const router = Router();
@@ -52,6 +55,12 @@ router.put(
 	authRequired,
 	modifyProduct
 )
+
+router.get(
+    "/search/:query",
+    validateParamsSchema(searchProductsSchema),
+    searchProducts
+);
 
 router.get(
 	"/getBySeller/:sellerId",
@@ -81,11 +90,6 @@ router.get(
     "/getByBrand/:brandName",
     validateParamsSchema(getByBrandSchema),
 	getByBrand
-);
-
-router.get(
-    "/getRandomProducts",
-    getRandomProducts
 );
 
 export default router;

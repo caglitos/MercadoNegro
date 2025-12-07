@@ -31,14 +31,16 @@ export const deleteAccountBodySchema = z.object({
     password: z.string(),
 });
 
-export const deleteAccountParamsSchema = z.object({
-	id: z.string().length(24),
-});
-
-export const faVerificationSchema = z.object({
+export const faBodyVerificationSchema = z.object({
     email: z.string().email(),
     code: z.string().length(6),
 });
+
+export const faCookieVerificationSchema = z.object({
+	username: z.string(),
+	passwordHash: z.string(),
+	displayName: z.string().optional()
+})
 
 export const changeUsernameSchema = z.object({
 	newUsername: z.string(),

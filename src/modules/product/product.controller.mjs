@@ -13,48 +13,39 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import Product from "./product.model.mjs";
+import Product from './product.model.mjs';
 
 export const create = async (req, res) => {
-    try {
-        const {
-            categoryId,
-            brandId,
-            title, 
-            subtitle, 
-            shortDescription, 
-            longDescription,
-            condition,
-            status
-          } = req.body;
+	try {
+		const {
+			categoryId, brandId, title, subtitle, shortDescription, longDescription, condition, status,
+		} = req.body;
 
 		const { sellerId } = req.cookies;
 
-		if (!sellerId)
-		    return res
-		            .status(400)
-		            .json({
-		                message: "Debes registrarte o iniciar sesión como vendedor para crear un producto"
-		            });
-		
-		
-        const newProduct = new Product({
+		if (!sellerId) return res
+			.status(400)
+			.json({
+				message: 'Debes registrarte o iniciar sesión como vendedor para crear un producto',
+			});
+
+
+		const newProduct = new Product({
 			seller_id: sellerId,
-            category_id: categoryId,
-            brand_id: brandId,
-            title,
-            subtitle,
-            short_description: shortDescription,
-            long_description: longDescription,
-            condition,
-            status
-        });
+			category_id: categoryId,
+			brand_id: brandId,
+			title,
+			subtitle,
+			short_description: shortDescription,
+			long_description: longDescription,
+			condition,
+			status,
+		});
 
-        await newProduct.save();
+		await newProduct.save();
 
-        return res.status(201).json({
-			message: "Producto creado exitosamente",
-			product: {
+		return res.status(201).json({
+			message: 'Producto creado exitosamente', product: {
 				seller_id: newProduct.seller_id,
 				title: newProduct.title,
 				subtitle: newProduct.subtitle,
@@ -62,27 +53,26 @@ export const create = async (req, res) => {
 				long_description: newProduct.long_description,
 				condition: newProduct.condition,
 				status: newProduct.status,
-				_id: newProduct._id
-		}
+				_id: newProduct._id,
+			},
 		});
-    } catch (error) {
-        return res.status(500).json({ message: "Error interno del servidor", error });
-    }
-}
+	} catch (error) {
+		return res.status(500).json({ message: 'Error interno del servidor', error });
+	}
+};
 
 export const modifyProduct = async (req, res) => {
 	try {
 		const { title, subtitle, short_description, long_description, condition, status } = req.body;
-        const { productId } = req.params;
+		const { productId } = req.params;
 
 		const productToUpdate = await Product.findById(productId);
 
-		if (!productToUpdate)
-		    return res
-		            .status(404)
-		            .json({
-		                message: "No se encontro el producto a modificar"
-		            });
+		if (!productToUpdate) return res
+			.status(404)
+			.json({
+				message: 'No se encontro el producto a modificar',
+			});
 
 		productToUpdate.title = title || productToUpdate.title;
 		productToUpdate.subtitle = subtitle || productToUpdate.subtitle;
@@ -92,185 +82,171 @@ export const modifyProduct = async (req, res) => {
 		productToUpdate.status = status || productToUpdate.status;
 
 		const productSaved = await productToUpdate.save();
-        
+
 		return res.status(200).json({
-		    message: "Producto modificado exitosamente",
-			productSaved
+			message: 'Producto modificado exitosamente', productSaved,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Error interno del servidor", error });
+		return res.status(500).json({ message: 'Error interno del servidor', error });
 	}
-}
+};
 
 export const getBySeller = async (req, res) => {
 	try {
 		const { sellerId } = req.params;
 
-		if (!sellerId)
-		    return res
-		            .status(400)
-		            .json({
-		                message: "El id del vendedor es obligatorio"
-		            });
+		if (!sellerId) return res
+			.status(400)
+			.json({
+				message: 'El id del vendedor es obligatorio',
+			});
 
-		const products =
-			await Product.find({ seller_id: sellerId })
-				.select("-createdAt -updatedAt -__v");
+		const products = await Product.find({ seller_id: sellerId })
+			.select('-createdAt -updatedAt -__v');
 
-		if (!products || products.length === 0)
-		    return res
-		            .status(404)
-		            .json({
-		                message: "No se encontraron productos de este vendedor"
-		            });
+		if (!products || products.length === 0) return res
+			.status(404)
+			.json({
+				message: 'No se encontraron productos de este vendedor',
+			});
 
 		return res.status(200).json({
-			message: `Se han encontrado ${products.length} productos del vendedor`,
-			products
+			message: `Se han encontrado ${products.length} productos del vendedor`, products,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Error interno del servidor", error });
+		return res.status(500).json({ message: 'Error interno del servidor', error });
 	}
-}
+};
 
 export const getBySellerName = async (req, res) => {
 	try {
 		const { sellerName } = req.params;
 
-		if (!sellerName)
-		    return res
-		            .status(400)
-		            .json({
-		                message: "El nombre del vendedor es obligatorio"
-		            });
-		
-		const products = 
-			await Product.find({ seller_name: sellerName })
-				.select("-createdAt -updatedAt -__v");
-		
-		if (!products || products.length === 0)
-		    return res
-		            .status(404)
-		            .json({
-		                message: "No se encontraron productos de este vendedor"
-		            });
-		
-		
+		if (!sellerName) return res
+			.status(400)
+			.json({
+				message: 'El nombre del vendedor es obligatorio',
+			});
+
+		const products = await Product.find({ seller_name: sellerName })
+			.select('-createdAt -updatedAt -__v');
+
+		if (!products || products.length === 0) return res
+			.status(404)
+			.json({
+				message: 'No se encontraron productos de este vendedor',
+			});
+
+
 		return res.status(200).json({
-		    message: `Se han encontrado productos del vendedor ${sellerName}`,
-			products: products
+			message: `Se han encontrado productos del vendedor ${sellerName}`, products: products,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Error Interno del servidor", error });
+		return res.status(500).json({ message: 'Error Interno del servidor', error });
 	}
-}
+};
 
 export const getByID = async (req, res) => {
 	try {
-	    const { productId } = req.params;
+		const { productId } = req.params;
 
-		if (!productId)
-		    return res
-		            .status(400)
-		            .json({
-		                message: "El ID del producto es obligatorio"
-		            });
+		if (!productId) return res
+			.status(400)
+			.json({
+				message: 'El ID del producto es obligatorio',
+			});
 
-	    const productFound =
-			await Product.findById(productId).select("-createdAt -updatedAt -__v");
+		const productFound = await Product.findById(productId).select('-createdAt -updatedAt -__v');
 
-		if (!productFound)
-		    return res.status(404).json({message: "No se encontro el producto"});
+		if (!productFound) return res.status(404).json({ message: 'No se encontro el producto' });
 
-	    return res.status(200).json({
-			message: "Producto encontrado exitosamente",
-			product: productFound
-	    });
+		return res.status(200).json({
+			message: 'Producto encontrado exitosamente', product: productFound,
+		});
 	} catch (error) {
-	    return res.status(500).json({ message: "Error interno del servidor", error });
+		return res.status(500).json({ message: 'Error interno del servidor', error });
 	}
-}
+};
 
 export const getByCategory = async (req, res) => {
 	try {
 		const { categoryName } = req.params;
 
-        if (!categoryName)
-            return res
-                    .status(400)
-                    .json({
-                        message: "EL Id es necesario"
-                    });
+		if (!categoryName) return res
+			.status(400)
+			.json({
+				message: 'EL Id es necesario',
+			});
 
 		const products = await Product.find({ category_id: categoryName })
-				.select("-createdAt -updatedAt -__v");
+			.select('-createdAt -updatedAt -__v');
 
-		if (!products || products.length === 0)
-		    return res
-		            .status(404)
-		            .json({
-		                message: "No se encontraron productos en esta categoria"
-		            });
+		if (!products || products.length === 0) return res
+			.status(404)
+			.json({
+				message: 'No se encontraron productos en esta categoria',
+			});
 
 
 		return res.status(200).json({
-		    message: `Se han encontrado ${products.length} de la categoria`,
-			productos: products
+			message: `Se han encontrado ${products.length} de la categoria`, productos: products,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Error interno del servidor", error });
+		return res.status(500).json({ message: 'Error interno del servidor', error });
 	}
-}
+};
 
 export const getByBrand = async (req, res) => {
 	try {
 		const { brandName } = req.params;
 
-        if (!brandName)
-            return res
-                    .status(400)
-                    .json({
-                        message: "El Id de la marca es necesario"
-                    });
+		if (!brandName) return res
+			.status(400)
+			.json({
+				message: 'El Id de la marca es necesario',
+			});
 
 		const products = await Product.find({ brand_id: brandName })
-			.select("-createdAt -updatedAt -__v");
+			.select('-createdAt -updatedAt -__v');
 
-		if (!products || products.length === 0)
-		    return res
-		            .status(404)
-		            .json({
-		                message: "No se encontraron productos de esa marca"
-		            });
+		if (!products || products.length === 0) return res
+			.status(404)
+			.json({
+				message: 'No se encontraron productos de esa marca',
+			});
 
 
 		return res.status(200).json({
-		    message: `Se han encontrado ${products.length} productos de la marca`,
-			productos: products
+			message: `Se han encontrado ${products.length} productos de la marca`, productos: products,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Error interno del servidor", error });
+		return res.status(500).json({ message: 'Error interno del servidor', error });
 	}
-}
+};
 
-export const getRandomProducts = async (req, res) => {
+export const searchProducts = async (req, res) => {
 	try {
-		const products = await Product.aggregate([ { $sample: { size: 10 } } ])
-			.project({ createdAt: 0, updatedAt: 0, __v: 0 });
+		const { query } = req.params;
 
+		const products = await Product.find({
+			$or: [
+				{ title: { $regex: query, $options: 'i' } },
+				{ subtitle: { $regex: query, $options: 'i' } },
+				{ short_description: { $regex: query, $options: 'i' } },
+				{ long_description: { $regex: query, $options: 'i' } },
+			],
+		}).limit(6).select('-createdAt -updatedAt -__v');
 
 		if (!products || products.length === 0)
-		    return res
-		            .status(404)
-		            .json({
-		                message: "No se encontraron productos"
-		            });
+			return res.status(404).json({
+				message: 'No se encontraron productos que coincidan con la búsqueda',
+			})
 
 		return res.status(200).json({
-		    message: `Productos aleatorios obtenidos exitosamente`,
-			productos: products
+			message: `Se han encontrado ${products.length} productos que coinciden con la búsqueda`,
+			products,
 		});
 	} catch (error) {
-		return res.status(500).json({ message: "Error interno del servidor", error });
+		return res.status(500).json({ message: 'Error interno del servidot', error });
 	}
-}
+};

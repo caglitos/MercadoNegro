@@ -13,3 +13,27 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+import ShippingProfile from './profile-shipping.model.mjs';
+
+export const create = async (req, res) => {
+	try {
+		const { sellerId, name, serviceLevel, priceRules, dimensions, enable } = req.body;
+
+		const newProfile = new ShippingProfile({
+			seller_id: sellerId,
+			name,
+			service_level: serviceLevel,
+			price_rules: priceRules,
+			dimensions,
+			enabled: enable,
+		});
+
+		await newProfile.save();
+
+		return res.status(200).json({
+			message: 'Funcionalidad de creación de perfil de envío no implementada aún', newProfile,
+		});
+	} catch (error) {
+		return res.status(500).json({ message: 'Error interno del servidor', error });
+	}
+};

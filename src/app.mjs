@@ -15,43 +15,30 @@
  */
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from './middlewares/cors.mjs';
 import user from "./modules/user/user.routes.mjs";
 import product from "./modules/product/product.routes.mjs";
+import image from "./modules/image/image.routes.mjs";
+import post from './modules/post/post.routes.mjs';
+import profileShipping from './modules/profile-shipping/profile-shipping.routes.mjs'; // bro, is 86 chars really necessary for this?
+
+import test from './test/test.js';
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 
-// Basic CORS middleware to allow frontend dev server
-app.use((req, res, next) => {
-	const allowedOrigins = new Set([
-		process.env.CORS_ORIGIN,
-		"http://localhost:4000",
-		"http://127.0.0.1:4000",
-		"http://localhost:5173",
-		"http://127.0.0.1:5173",
-	].filter(Boolean));
+app.use(cors);
 
-	const origin = req.headers.origin;
-	if (origin && allowedOrigins.has(origin))
-		res.header("Access-Control-Allow-Origin", origin);
-	// If no origin header or not in list, do not set ACAO to avoid reflecting arbitrary origins
-
-	res.header("Access-Control-Allow-Credentials", "true");
-	res.header(
-		"Access-Control-Allow-Headers",
-		"Origin, X-Requested-With, Content-Type, Accept, Authorization"
-	);
-	res.header(
-		"Access-Control-Allow-Methods",
-		"GET,POST,PUT,PATCH,DELETE,OPTIONS"
-	);
-	if (req.method === "OPTIONS") return res.sendStatus(204);
-	next();
-});
+console.log();
 
 app.use("/api/user", user);
 app.use("/api/product", product);
+app.use("/api/image", image)
+app.use("/api/post", post);
+app.use("/api/profile-shipping", profileShipping);
+
+app.use("/api/test/", test)
 
 export default app;

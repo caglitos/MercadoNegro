@@ -21,3 +21,15 @@ export const validateParamsSchema = (schema) => (req, res, next) => {
 			.json({ error: error });
 	}
 };
+
+export const validateCookieSchema = (schema) => (req, res, next) => {
+	try {
+		schema.parse(req.cookies);
+		next();
+	} catch (error) {
+		console.log(error);
+		return res
+			.status(400)
+			.json({ error: error });
+	}
+}

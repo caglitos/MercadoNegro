@@ -13,3 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+import { Router } from 'express';
+import { validateBodySchema } from '../../middlewares/validator.middleware.mjs';
+import { createSchema } from './profile-shipping.schemas.mjs';
+import { create } from './profile-shipping.controller.mjs';
+
+const router = Router();
+
+router.post(
+    "/create",
+    validateBodySchema(createSchema),
+	create
+);
+
+export default router;

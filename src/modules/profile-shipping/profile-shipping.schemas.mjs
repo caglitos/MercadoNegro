@@ -13,3 +13,13 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+import z from 'zod';
+
+export const createSchema = z.object({
+	sellerId: z.string().min(1, { message: 'sellerId is required' }),
+	name: z.string().min(1, { message: 'name is required' }),
+	serviceLevel: z.enum(['standard', 'express', 'same_day', 'pickup']).optional(),
+	priceRules: z.record(z.any()).optional(),
+	dimensions: z.record(z.any()).optional(),
+	enable: z.boolean().optional(),
+})
